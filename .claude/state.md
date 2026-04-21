@@ -6,7 +6,7 @@
 
 | ID | タスク | Status | 担当ファイル | Verified |
 |----|--------|--------|------------|---------|
-| T-001 | GitHubリポジトリ作成 + Pages有効化（docs/指定） | pending | - | [ ] |
+| T-001 | GitHubリポジトリ作成 + Pages有効化（docs/指定） | done | docs/index.html | [x] |
 | T-002 | Python環境（requirements.txt + .venv） | pending | requirements.txt | [ ] |
 | T-003 | scripts/fetch_market.py（yfinance + Finnhubカレンダー） | pending | scripts/fetch_market.py | [ ] |
 | T-004 | scripts/fetch_news.py（Finnhubニュース取得） | pending | scripts/fetch_news.py | [ ] |
@@ -25,3 +25,4 @@
 | 日時 | ファイル | アクション |
 |------|---------|----------|
 | 2026-04-21 | bootstrap.ps1 実行 | 環境初期化 |
+| 2026-04-21 05:22 | C:\Users\chidj\dev\market-pulse\docs\index.html | 書き込み |
