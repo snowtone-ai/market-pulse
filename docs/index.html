@@ -113,6 +113,7 @@
   <script>
     // レポート一覧を動的生成（reports/YYYY-MM-DD.html の存在確認は Actions が index を更新する）
     const list = document.getElementById('report-list');
+    window.__REPORTS__ = ["2026-04-21"];
     const reports = window.__REPORTS__ || [];
     if (reports.length > 0) {
       list.innerHTML = reports.map(date => `
