@@ -18,7 +18,7 @@
 | T-010 | docs/index.html（アーカイブ一覧、自動生成） | done | docs/index.html | [x] |
 | T-011 | .github/workflows/generate.yml（cron UTC 22:00 + Secrets連携） | done | .github/workflows/generate.yml | [x] |
 | T-012 | GitHub Secrets設定 + Actionsエンドツーエンドテスト | done | - | [x] |
-| T-013 | Android PWA動作確認（ホーム画面追加 + オフライン） | pending | - | [ ] |
+| T-013 | Android PWA動作確認（ホーム画面追加 + オフライン） | done | - | [x] |
 
 ## Activity Log
 
