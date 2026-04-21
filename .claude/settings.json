@@ -1,0 +1,122 @@
+{
+  "defaultMode": "acceptEdits",
+  "permissions": {
+    "deny": [
+      "Read(./.env.local)",
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Bash(rm -rf *)",
+      "Bash(rm -rf /)",
+      "Bash(sudo:*)",
+      "Bash(curl:*)",
+      "Bash(wget:*)",
+      "Bash(ssh:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git clean -fd:*)",
+      "Bash(Remove-Item -Recurse -Force *)",
+      "Bash(Remove-Item -Recurse -Force /)"
+    ],
+    "allow": [
+      "Read",
+      "Glob",
+      "Grep",
+      "LS",
+      "WebFetch",
+      "WebSearch",
+      "Task",
+      "Write(./**)",
+      "Edit(./**)",
+      "Bash(python:*)",
+      "Bash(python3:*)",
+      "Bash(pip:*)",
+      "Bash(pip3:*)",
+      "Bash(black:*)",
+      "Bash(mypy:*)",
+      "Bash(pytest:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git branch:*)",
+      "Bash(git checkout:*)",
+      "Bash(git remote:*)",
+      "Bash(git restore:*)",
+      "Bash(git stash:*)",
+      "Bash(git pull:*)",
+      "Bash(gh:*)",
+      "Bash(mkdir:*)",
+      "Bash(New-Item:*)",
+      "Bash(touch:*)",
+      "Bash(Get-Content:*)",
+      "Bash(cat:*)",
+      "Bash(ls:*)",
+      "Bash(Get-ChildItem:*)",
+      "Bash(pwd)",
+      "Bash(Move-Item:*)",
+      "Bash(Copy-Item:*)",
+      "Bash(cp:*)",
+      "Bash(mv:*)",
+      "Bash(grep:*)",
+      "Bash(rg:*)",
+      "Bash(find:*)",
+      "Bash(Select-String:*)",
+      "mcp__.*"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear",
+        "hooks": [{ "type": "command", "command": "node .claude/hooks/verify-state.mjs" }]
+      },
+      {
+        "matcher": "compact",
+        "hooks": [{ "type": "command", "command": "node .claude/hooks/resume-state.mjs" }]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "auto|manual",
+        "hooks": [{ "type": "command", "command": "node .claude/hooks/freeze-state.mjs" }]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          { "type": "command", "command": "node .claude/hooks/format-file.mjs", "async": true },
+          { "type": "command", "command": "node .claude/hooks/build-check.mjs" },
+          { "type": "command", "command": "node .claude/hooks/update-state.mjs", "async": true }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "hooks": [{ "type": "command", "command": "node .claude/hooks/log-error.mjs", "async": true }]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [{ "type": "command", "command": "node .claude/hooks/block-dangerous.mjs" }]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [{ "type": "command", "command": "node .claude/hooks/stop-guard.mjs", "timeout": 10 }]
+      }
+    ],
+    "StopFailure": [
+      {
+        "matcher": "rate_limit|server_error",
+        "hooks": [{ "type": "command", "command": "node .claude/hooks/stopfailure-notify.mjs" }]
+      }
+    ]
+  }
+}

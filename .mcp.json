@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "context7": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "@upstash/context7-mcp@latest"]
+    },
+    "brave-search": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "@brave/brave-search-mcp-server"],
+      "env": {
+        "BRAVE_API_KEY": "<your-brave-api-key>"
+      }
+    }
+  }
+}
