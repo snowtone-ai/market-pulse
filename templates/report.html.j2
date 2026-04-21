@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a0e1a">
+  <meta name="description" content="Market Pulse {{ data.date }} — 朝の市場レポート">
+  <title>Market Pulse {{ data.date }}</title>
+  <link rel="manifest" href="/market-pulse/manifest.json">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0e1a;
+      --surface: #0f1629;
+      --surface2: #141e35;
+      --border: #1e3a5f;
+      --border2: #1e2d40;
+      --text: #e2e8f0;
+      --text-muted: #64748b;
+      --text-dim: #475569;
+      --blue: #3b82f6;
+      --blue-light: #60a5fa;
+      --green: #10b981;
+      --red: #ef4444;
+      --yellow: #f59e0b;
+      --purple: #8b5cf6;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 15px;
+    }
+    a { color: var(--blue-light); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Header ── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-left { display: flex; align-items: center; gap: 0.75rem; }
+    .logo { font-size: 1.1rem; font-weight: 700; color: var(--blue-light); }
+    .header-date {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 4px;
+      padding: 0.2rem 0.6rem;
+    }
+    .header-right { display: flex; gap: 0.5rem; align-items: center; }
+    .badge {
+      font-size: 0.7rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 3px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+    .badge-gemini { background: rgba(59,130,246,0.15); color: var(--blue-light); border: 1px solid rgba(59,130,246,0.3); }
+
+    /* ── Layout ── */
+    .page { max-width: 960px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+
+    /* ── Section titles ── */
+    .section-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border2);
+    }
+
+    /* ── Market Overview Banner ── */
+    .overview-banner {
+      background: linear-gradient(135deg, #0d1b3e 0%, #0a1628 100%);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--blue);
+      border-radius: 6px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+      font-size: 1rem;
+      color: #c7d7f0;
+      line-height: 1.7;
+    }
+
+    /* ── Ticker Grid ── */
+    .ticker-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .ticker-card {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 6px;
+      padding: 0.75rem;
+    }
+    .ticker-symbol { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; letter-spacing: 0.05em; }
+    .ticker-name { font-size: 0.8rem; color: var(--text); margin-top: 0.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ticker-price { font-size: 1.05rem; font-weight: 700; margin-top: 0.4rem; color: var(--text); font-variant-numeric: tabular-nums; }
+    .ticker-change { font-size: 0.8rem; font-weight: 600; margin-top: 0.1rem; }
+    .up { color: var(--green); }
+    .dn { color: var(--red); }
+
+    /* ── News Cards ── */
+    .news-list { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; }
+    .news-card {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .news-card-header {
+      padding: 1rem 1.25rem 0.75rem;
+      border-bottom: 1px solid var(--border2);
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+    }
+    .news-rank {
+      flex-shrink: 0;
+      width: 1.75rem;
+      height: 1.75rem;
+      background: rgba(59,130,246,0.15);
+      border: 1px solid rgba(59,130,246,0.3);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--blue-light);
+    }
+    .news-headline { font-size: 0.975rem; font-weight: 600; color: var(--text); line-height: 1.4; }
+    .news-meta { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem; }
+    .news-body { padding: 1rem 1.25rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    @media (max-width: 600px) { .news-body { grid-template-columns: 1fr; } }
+    .analysis-block { background: var(--surface2); border-radius: 5px; padding: 0.75rem; }
+    .analysis-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+    .label-what { color: var(--blue-light); }
+    .label-why { color: var(--yellow); }
+    .label-reaction { color: var(--purple); }
+    .label-scenarios { color: var(--green); }
+    .label-contrarian { color: var(--red); }
+    .label-watch { color: #94a3b8; }
+    .analysis-text { font-size: 0.85rem; color: #c7d7f0; line-height: 1.55; }
+    .scenarios { display: flex; flex-direction: column; gap: 0.35rem; margin-top: 0.1rem; }
+    .scenario { font-size: 0.82rem; line-height: 1.4; }
+    .scenario-bull::before { content: "▲ "; color: var(--green); }
+    .scenario-base::before { content: "● "; color: var(--yellow); }
+    .scenario-bear::before { content: "▼ "; color: var(--red); }
+    .news-footer {
+      padding: 0.6rem 1.25rem;
+      border-top: 1px solid var(--border2);
+      font-size: 0.75rem;
+    }
+
+    /* ── Watchlist with mini charts ── */
+    .watchlist-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+    .wl-card {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 6px;
+      padding: 0.75rem;
+    }
+    .wl-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+    .wl-symbol { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; }
+    .wl-change { font-size: 0.8rem; font-weight: 700; }
+    .wl-price { font-size: 1rem; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
+    .wl-name { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.4rem; }
+    .wl-comment { font-size: 0.75rem; color: #94a3b8; margin-top: 0.5rem; line-height: 1.4; border-top: 1px solid var(--border2); padding-top: 0.4rem; }
+    canvas { display: block; width: 100% !important; height: 60px !important; }
+
+    /* ── Calendar ── */
+    .calendar-list { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem; }
+    .cal-item {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 5px;
+      padding: 0.7rem 1rem;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    .cal-date { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); flex-shrink: 0; min-width: 60px; }
+    .cal-event { font-size: 0.875rem; color: var(--text); flex: 1; }
+    .cal-note { font-size: 0.8rem; color: var(--text-muted); flex: 1; }
+    .cal-impact { font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.4rem; border-radius: 3px; background: rgba(239,68,68,0.15); color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); }
+
+    /* ── Editor's Note ── */
+    .editors-note {
+      background: linear-gradient(135deg, #1a0e2e 0%, #0f0e1a 100%);
+      border: 1px solid rgba(139,92,246,0.3);
+      border-left: 3px solid var(--purple);
+      border-radius: 6px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+      color: #c4b5fd;
+      line-height: 1.7;
+    }
+    .editors-note .note-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: 0.5rem;
+    }
+
+    /* ── Nav ── */
+    .nav-bar {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .nav-link {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      border: 1px solid var(--border2);
+      border-radius: 4px;
+      padding: 0.3rem 0.75rem;
+      transition: all 0.15s;
+    }
+    .nav-link:hover { border-color: var(--blue); color: var(--blue-light); text-decoration: none; }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      border-top: 1px solid var(--border2);
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <span class="logo">Market Pulse</span>
+      <span class="header-date">{{ data.date }}</span>
+    </div>
+    <div class="header-right">
+      <span class="badge badge-gemini">Gemini 2.5 Flash</span>
+    </div>
+  </header>
+
+  <div class="page">
+    <!-- Nav -->
+    <nav class="nav-bar">
+      <a class="nav-link" href="#overview">概況</a>
+      <a class="nav-link" href="#news">ニュース分析</a>
+      <a class="nav-link" href="#watchlist">ウォッチリスト</a>
+      <a class="nav-link" href="#calendar">経済カレンダー</a>
+      <a class="nav-link" href="/market-pulse/">← アーカイブ</a>
+    </nav>
+
+    <!-- Market Overview -->
+    <section id="overview">
+      <div class="section-title">Market Overview</div>
+      <div class="overview-banner">{{ data.market_overview }}</div>
+
+      <!-- Quick Tickers -->
+      <div class="ticker-grid">
+        {% for category, items in prices.items() %}
+          {% for item in items %}
+            {% if not item.get('error') %}
+            <div class="ticker-card">
+              <div class="ticker-symbol">{{ item.symbol }}</div>
+              <div class="ticker-name" title="{{ item.name }}">{{ item.name }}</div>
+              <div class="ticker-price">{{ item.price | format_price }}</div>
+              <div class="ticker-change {% if item.change_pct >= 0 %}up{% else %}dn{% endif %}">
+                {% if item.change_pct >= 0 %}+{% endif %}{{ "%.2f"|format(item.change_pct) }}%
+              </div>
+            </div>
+            {% endif %}
+          {% endfor %}
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- News Analysis -->
+    <section id="news">
+      <div class="section-title">News Analysis (Top {{ data.selected_news | length }})</div>
+      <div class="news-list">
+        {% for item in data.selected_news %}
+        <article class="news-card">
+          <div class="news-card-header">
+            <div class="news-rank">{{ item.rank }}</div>
+            <div>
+              <div class="news-headline">
+                {% if item.url %}<a href="{{ item.url }}" target="_blank" rel="noopener">{{ item.headline }}</a>{% else %}{{ item.headline }}{% endif %}
+              </div>
+              <div class="news-meta">{{ item.source }}</div>
+            </div>
+          </div>
+          <div class="news-body">
+            <div class="analysis-block">
+              <div class="analysis-label label-what">What Happened</div>
+              <div class="analysis-text">{{ item.analysis.what_happened }}</div>
+            </div>
+            <div class="analysis-block">
+              <div class="analysis-label label-why">Why It Matters</div>
+              <div class="analysis-text">{{ item.analysis.why_it_matters }}</div>
+            </div>
+            <div class="analysis-block">
+              <div class="analysis-label label-reaction">Market Reaction</div>
+              <div class="analysis-text">{{ item.analysis.market_reaction }}</div>
+            </div>
+            <div class="analysis-block">
+              <div class="analysis-label label-scenarios">3 Scenarios</div>
+              <div class="scenarios">
+                <div class="scenario scenario-bull">{{ item.analysis.scenarios.bull }}</div>
+                <div class="scenario scenario-base">{{ item.analysis.scenarios.base }}</div>
+                <div class="scenario scenario-bear">{{ item.analysis.scenarios.bear }}</div>
+              </div>
+            </div>
+            <div class="analysis-block">
+              <div class="analysis-label label-contrarian">Contrarian View</div>
+              <div class="analysis-text">{{ item.analysis.contrarian_view }}</div>
+            </div>
+            <div class="analysis-block">
+              <div class="analysis-label label-watch">What to Watch</div>
+              <div class="analysis-text">{{ item.analysis.what_to_watch }}</div>
+            </div>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- Watchlist -->
+    <section id="watchlist">
+      <div class="section-title">Watchlist — NVDA / AAPL / GOOGL / MSFT / TSM</div>
+      <div class="watchlist-grid">
+        {% for item in data.watchlist_highlights %}
+        <div class="wl-card">
+          <div class="wl-header">
+            <div>
+              <div class="wl-symbol">{{ item.symbol }}</div>
+              <div class="wl-name">{{ item.name }}</div>
+            </div>
+            <div class="wl-change {% if item.change_pct >= 0 %}up{% else %}dn{% endif %}">
+              {% if item.change_pct >= 0 %}+{% endif %}{{ "%.2f"|format(item.change_pct) }}%
+            </div>
+          </div>
+          <div class="wl-price">{{ item.price | format_price }}</div>
+          {% if item.chart_prices %}
+          <canvas id="chart-{{ item.symbol | replace('/','-') }}"></canvas>
+          {% endif %}
+          <div class="wl-comment">{{ item.one_line }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- Economic Calendar -->
+    {% if data.economic_calendar_highlights %}
+    <section id="calendar">
+      <div class="section-title">Economic Calendar — This Week</div>
+      <div class="calendar-list">
+        {% for ev in data.economic_calendar_highlights %}
+        <div class="cal-item">
+          <div class="cal-date">{{ ev.date }}</div>
+          <div class="cal-event">{{ ev.event }}</div>
+          <div class="cal-note">{{ ev.note }}</div>
+          <span class="cal-impact">HIGH</span>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+    <!-- Editor's Note -->
+    <section>
+      <div class="editors-note">
+        <div class="note-label">Editor's Note</div>
+        {{ data.editors_note }}
+      </div>
+    </section>
+
+  </div><!-- /page -->
+
+  <footer>
+    Market Pulse © 2026 &nbsp;|&nbsp; Generated by GitHub Actions + Gemini 2.5 Flash &nbsp;|&nbsp;
+    <a href="/market-pulse/">アーカイブ一覧</a>
+  </footer>
+
+  <script>
+    // Mini sparkline charts for watchlist
+    const chartData = {{ chart_data_json }};
+    chartData.forEach(({ id, dates, prices, up }) => {
+      const canvas = document.getElementById('chart-' + id);
+      if (!canvas) return;
+      const color = up ? '#10b981' : '#ef4444';
+      new Chart(canvas, {
+        type: 'line',
+        data: {
+          labels: dates,
+          datasets: [{
+            data: prices,
+            borderColor: color,
+            borderWidth: 1.5,
+            pointRadius: 0,
+            fill: true,
+            backgroundColor: up
+              ? 'rgba(16,185,129,0.08)'
+              : 'rgba(239,68,68,0.08)',
+            tension: 0.3,
+          }]
+        },
+        options: {
+          animation: false,
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { enabled: false } },
+          scales: {
+            x: { display: false },
+            y: { display: false },
+          },
+        }
+      });
+    });
+  </script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/market-pulse/sw.js');
+    }
+  </script>
+</body>
+</html>
