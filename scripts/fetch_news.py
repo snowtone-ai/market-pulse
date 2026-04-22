@@ -1,4 +1,4 @@
-"""Finnhub ニュース取得: AI/テック重点 → 米国株 → 日本株 → 為替/コモディティ"""
+"""Finnhub ニュース取得: グローバル経済重視（中央銀行・マクロ・地政学・為替・株式）"""
 from __future__ import annotations
 
 import asyncio
@@ -9,17 +9,16 @@ import httpx
 
 JST = timezone(timedelta(hours=9))
 
-# 優先順位付きカテゴリ
 CATEGORIES = [
-    ("general", "general"),     # AI/テック含む全般ニュース
-    ("forex", "forex"),
-    ("merger", "merger"),
+    "general",
+    "forex",
+    "merger",
 ]
 
-# ウォッチリスト銘柄（個別ニュース取得用）
-STOCK_SYMBOLS = ["NVDA", "AAPL", "GOOGL", "MSFT", "TSM"]
+# 幅広い業種をカバー（テクノロジー偏重を排除）
+STOCK_SYMBOLS = ["AAPL", "AMZN", "GS", "JPM", "XOM"]
 
-MAX_NEWS = 5
+MAX_NEWS_POOL = 15   # Gemini が 5 件選別するためのプール
 FINNHUB_BASE = "https://finnhub.io/api/v1"
 
 
@@ -52,22 +51,55 @@ async def _fetch_general_news(
             params={"category": category, "minId": 0, "token": api_key},
         )
         resp.raise_for_status()
-        return resp.json()[:5]
+        return resp.json()[:8]
     except Exception as exc:
         return [{"headline": f"Error fetching {category}", "error": str(exc)}]
 
 
 def _score_news(item: dict[str, Any]) -> int:
-    """優先スコア: AI/テック > 米国株 > 為替 > その他"""
-    headline = (item.get("headline") or item.get("summary") or "").lower()
-    related = (item.get("related") or "").upper()
+    """市場重要度スコア: 中央銀行/マクロ > 地政学 > 為替/コモディティ > 株式市場"""
+    headline = (item.get("headline") or "").lower()
+    summary = (item.get("summary") or "").lower()
+    text = headline + " " + summary[:200]
     score = 0
-    if any(w in headline for w in ["ai", "artificial intelligence", "nvidia", "semiconductor", "tech"]):
+
+    # 中央銀行・金融政策（最高優先）
+    if any(w in text for w in [
+        "fed", "federal reserve", "fomc", "boj", "bank of japan",
+        "ecb", "rate hike", "rate cut", "interest rate", "monetary policy",
+        "inflation target", "yield curve", "quantitative",
+    ]):
         score += 100
-    if any(s in related for s in STOCK_SYMBOLS):
-        score += 50
-    if any(w in headline for w in ["fed", "rate", "inflation", "gdp", "earnings"]):
-        score += 30
+
+    # マクロ経済指標
+    if any(w in text for w in [
+        "gdp", "inflation", "cpi", "ppi", "unemployment", "nonfarm",
+        "payroll", "trade balance", "current account", "recession",
+        "economic growth", "consumer price",
+    ]):
+        score += 80
+
+    # 地政学・政策リスク
+    if any(w in text for w in [
+        "tariff", "sanction", "trade war", "geopolit", "trump",
+        "china", "japan", "russia", "ukraine", "middle east", "opec",
+    ]):
+        score += 60
+
+    # 為替・コモディティ
+    if any(w in text for w in [
+        "dollar", "yen", "euro", "gold", "oil", "crude", "commodity",
+        "forex", "currency", "brent",
+    ]):
+        score += 40
+
+    # 株式市場全般
+    if any(w in text for w in [
+        "stock", "market", "nasdaq", "s&p 500", "dow jones", "nikkei",
+        "earnings", "revenue", "quarterly results",
+    ]):
+        score += 20
+
     return score
 
 
@@ -80,7 +112,7 @@ async def fetch_news_async(api_key: str) -> list[dict[str, Any]]:
         tasks = []
         for symbol in STOCK_SYMBOLS:
             tasks.append(_fetch_company_news(client, symbol, from_date, to_date, api_key))
-        for category, _ in CATEGORIES:
+        for category in CATEGORIES:
             tasks.append(_fetch_general_news(client, category, api_key))
 
         results = await asyncio.gather(*tasks)
@@ -100,9 +132,8 @@ async def fetch_news_async(api_key: str) -> list[dict[str, Any]]:
 
     all_news.sort(key=lambda x: (x["_score"], x.get("datetime", 0)), reverse=True)
 
-    # 必要フィールドだけ返す
     cleaned = []
-    for item in all_news[:MAX_NEWS]:
+    for item in all_news[:MAX_NEWS_POOL]:
         cleaned.append({
             "headline": item.get("headline", ""),
             "summary": item.get("summary", ""),

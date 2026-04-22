@@ -47,40 +47,18 @@ def _build_chart_data(watchlist_highlights: list[dict]) -> list[dict]:
     return result
 
 
-def _update_archive_index(docs_dir: Path, date_str: str) -> None:
-    """docs/index.html の __REPORTS__ 配列に新しい日付を追加"""
+def _regenerate_archive_index(docs_dir: Path, env: Environment) -> None:
+    """docs/reports/ 内の全 YYYY-MM-DD.html をスキャンし、index.html を完全再生成。
+    regex パッチ方式を廃止: ファイルスキャンで常に正確なリストを保証する。"""
+    reports_dir = docs_dir / "reports"
+    report_files = sorted(reports_dir.glob("????-??-??.html"), reverse=True)
+    dates = [f.stem for f in report_files]
+
+    template = env.get_template("index.html.j2")
+    html = template.render(dates=dates)
+
     index_path = docs_dir / "index.html"
-    if not index_path.exists():
-        return
-
-    content = index_path.read_text(encoding="utf-8")
-    marker = "const reports = window.__REPORTS__ || [];"
-    if marker not in content:
-        return
-
-    # 既存の日付リストを抽出
-    import re
-    match = re.search(r"window\.__REPORTS__\s*=\s*(\[.*?\]);", content, re.DOTALL)
-    if match:
-        try:
-            existing = json.loads(match.group(1))
-        except json.JSONDecodeError:
-            existing = []
-    else:
-        existing = []
-
-    if date_str not in existing:
-        existing.insert(0, date_str)
-        # 最大90件
-        existing = existing[:90]
-
-    new_reports_js = f"window.__REPORTS__ = {json.dumps(existing)};"
-    if match:
-        content = content[:match.start()] + new_reports_js + content[match.end():]
-    else:
-        content = content.replace(marker, f"{new_reports_js}\n    {marker}")
-
-    index_path.write_text(content, encoding="utf-8")
+    index_path.write_text(html, encoding="utf-8")
 
 
 def generate(date_str: str | None = None) -> Path:
@@ -132,8 +110,8 @@ def generate(date_str: str | None = None) -> Path:
     out_path.write_text(html, encoding="utf-8")
     print(f"[generate] レポート生成完了: {out_path}")
 
-    _update_archive_index(docs_dir, date_str)
-    print("[generate] アーカイブインデックス更新完了")
+    _regenerate_archive_index(docs_dir, env)
+    print("[generate] アーカイブインデックス再生成完了")
 
     return out_path
 

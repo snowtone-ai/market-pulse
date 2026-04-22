@@ -1,13 +1,11 @@
-const CACHE = 'market-pulse-v1';
-const STATIC = [
-  '/market-pulse/',
-  '/market-pulse/index.html',
+const CACHE = 'market-pulse-v2';
+const PRECACHE = [
   '/market-pulse/manifest.json',
 ];
 
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open(CACHE).then(c => c.addAll(STATIC)).then(() => self.skipWaiting())
+    caches.open(CACHE).then(c => c.addAll(PRECACHE)).then(() => self.skipWaiting())
   );
 });
 
@@ -22,8 +20,13 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
 
-  // ネットワーク優先（レポートHTMLは常に最新を取得）
-  if (url.pathname.startsWith('/market-pulse/reports/')) {
+  // index・reports は常にネットワーク優先（毎朝更新されるコンテンツ）
+  const isIndex =
+    url.pathname === '/market-pulse/' ||
+    url.pathname === '/market-pulse/index.html';
+  const isReport = url.pathname.startsWith('/market-pulse/reports/');
+
+  if (isIndex || isReport) {
     e.respondWith(
       fetch(e.request)
         .then(res => {
@@ -36,7 +39,7 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // キャッシュ優先（静的アセット）
+  // その他（manifest・静的アセット）はキャッシュ優先
   e.respondWith(
     caches.match(e.request).then(cached => {
       if (cached) return cached;
