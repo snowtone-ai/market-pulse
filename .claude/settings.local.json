@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(GH_TOKEN=\"\" gh auth *)",
+      "Bash(GH_TOKEN=\"\" GITHUB_TOKEN=\"\" gh api *)",
+      "Bash(GH_TOKEN=\"\" GITHUB_TOKEN=\"\" gh secret *)",
+      "Bash(GH_TOKEN=\"\" GITHUB_TOKEN=\"\" gh workflow *)",
+      "Bash(GH_TOKEN=\"\" GITHUB_TOKEN=\"\" gh run watch 24705902024 --repo snowtone-ai/market-pulse)",
+      "Bash(git rm *)",
+      "Bash(git filter-repo *)"
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "context7",
+    "brave-search"
+  ]
+}

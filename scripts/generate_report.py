@@ -1,7 +1,6 @@
 """メインオーケストレーター: データ取得 → Gemini分析 → Jinja2レンダリング → docs/出力"""
 from __future__ import annotations
 
-import json
 import os
 import sys
 from datetime import datetime, timedelta, timezone
@@ -28,23 +27,6 @@ def _format_price(value: float) -> str:
     else:
         return f"{value:.4f}"
 
-
-def _build_chart_data(watchlist_highlights: list[dict]) -> list[dict]:
-    result = []
-    for item in watchlist_highlights:
-        sym = item.get("symbol", "")
-        prices = item.get("chart_prices", [])
-        dates = item.get("chart_dates", [])
-        if not prices:
-            continue
-        up = (prices[-1] >= prices[0]) if len(prices) >= 2 else True
-        result.append({
-            "id": sym.replace("/", "-"),
-            "dates": dates,
-            "prices": prices,
-            "up": up,
-        })
-    return result
 
 
 def _regenerate_archive_index(docs_dir: Path, env: Environment) -> None:
@@ -75,7 +57,7 @@ def generate(date_str: str | None = None) -> Path:
     if date_str is None:
         date_str = datetime.now(JST).strftime("%Y-%m-%d")
 
-    print(f"[generate] {date_str} — データ取得開始")
+    print(f"[generate] {date_str} - データ取得開始")
     market_data = fetch_market_data(finnhub_key)
     print("[generate] ニュース取得中...")
     news_list = fetch_news(finnhub_key)
@@ -87,7 +69,6 @@ def generate(date_str: str | None = None) -> Path:
         print(f"[generate] WARNING: Gemini error: {analysis['error']}", file=sys.stderr)
 
     prices = market_data.get("prices", {})
-    chart_data = _build_chart_data(analysis.get("watchlist_highlights", []))
 
     env = Environment(
         loader=FileSystemLoader(str(ROOT / "templates")),
@@ -99,7 +80,6 @@ def generate(date_str: str | None = None) -> Path:
     html = template.render(
         data=analysis,
         prices=prices,
-        chart_data_json=json.dumps(chart_data),
     )
 
     docs_dir = ROOT / "docs"

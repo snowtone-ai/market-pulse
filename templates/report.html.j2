@@ -7,7 +7,6 @@
   <meta name="description" content="Market Pulse {{ data.date }} — 朝の市場レポート">
   <title>Market Pulse {{ data.date }}</title>
   <link rel="manifest" href="/market-pulse/manifest.json">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -367,34 +366,6 @@
       margin: 0.25rem 0;
     }
 
-    /* ── Watchlist ── */
-    .watchlist-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
-      gap: 0.625rem;
-      margin-bottom: 1rem;
-    }
-    .wl-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      padding: 0.75rem;
-    }
-    .wl-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.35rem; }
-    .wl-symbol { font-size: 0.65rem; color: var(--text-muted); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
-    .wl-change { font-size: 0.75rem; font-weight: 700; }
-    .wl-price { font-size: 1.05rem; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
-    .wl-name { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 0.4rem; }
-    .wl-comment {
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      margin-top: 0.5rem;
-      line-height: 1.45;
-      border-top: 1px solid var(--border);
-      padding-top: 0.4rem;
-    }
-    canvas { display: block; width: 100% !important; height: 55px !important; }
-
     /* ── Editor's Note ── */
     .editors-note {
       background: var(--purple-bg);
@@ -448,7 +419,6 @@
       <a class="nav-link" href="#overview">市場概況</a>
       <a class="nav-link" href="#macro">マクロ分析</a>
       <a class="nav-link" href="#news">ニュース解説</a>
-      <a class="nav-link" href="#watchlist">ウォッチリスト</a>
       <a class="nav-link" href="/market-pulse/">← アーカイブ</a>
     </nav>
 
@@ -590,31 +560,6 @@
       {% endfor %}
     </section>
 
-    <!-- Watchlist -->
-    <section id="watchlist">
-      <div class="section-title">Watchlist — 主要銘柄・指数</div>
-      <div class="watchlist-grid">
-        {% for item in data.watchlist_highlights %}
-        <div class="wl-card">
-          <div class="wl-header">
-            <div>
-              <div class="wl-symbol">{{ item.symbol }}</div>
-              <div class="wl-name">{{ item.name }}</div>
-            </div>
-            <div class="wl-change {% if item.change_pct >= 0 %}up{% else %}dn{% endif %}">
-              {% if item.change_pct >= 0 %}+{% endif %}{{ "%.2f"|format(item.change_pct) }}%
-            </div>
-          </div>
-          <div class="wl-price">{{ item.price | format_price }}</div>
-          {% if item.chart_prices %}
-          <canvas id="chart-{{ item.symbol | replace('/','-') | replace('^','-') }}"></canvas>
-          {% endif %}
-          <div class="wl-comment">{{ item.one_line }}</div>
-        </div>
-        {% endfor %}
-      </div>
-    </section>
-
     <!-- Editor's Note -->
     <section>
       <div class="section-title">Editor's Note — 編集後記</div>
@@ -630,38 +575,6 @@
     Market Pulse © 2026 &nbsp;|&nbsp; GitHub Actions + Gemini 2.5 Flash &nbsp;|&nbsp;
     <a href="/market-pulse/">アーカイブ一覧</a>
   </footer>
-
-  <script>
-    const chartData = {{ chart_data_json }};
-    chartData.forEach(({ id, dates, prices, up }) => {
-      const safeId = id.replace(/\//g, '-').replace(/\^/g, '-');
-      const canvas = document.getElementById('chart-' + safeId);
-      if (!canvas) return;
-      const color = up ? '#15803d' : '#b91c1c';
-      new Chart(canvas, {
-        type: 'line',
-        data: {
-          labels: dates,
-          datasets: [{
-            data: prices,
-            borderColor: color,
-            borderWidth: 1.5,
-            pointRadius: 0,
-            fill: true,
-            backgroundColor: up ? 'rgba(21,128,61,0.08)' : 'rgba(185,28,28,0.08)',
-            tension: 0.3,
-          }]
-        },
-        options: {
-          animation: false,
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false }, tooltip: { enabled: false } },
-          scales: { x: { display: false }, y: { display: false } },
-        }
-      });
-    });
-  </script>
 
   <script>
     if ('serviceWorker' in navigator) {
