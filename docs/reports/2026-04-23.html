@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="Market Pulse 2026-04-23 — 朝の市場レポート">
+  <title>Market Pulse 2026-04-23</title>
+  <link rel="manifest" href="/market-pulse/manifest.json">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f0f2f5;
+      --surface: #ffffff;
+      --surface2: #f9fafb;
+      --surface3: #f3f4f6;
+      --border: #e5e7eb;
+      --border2: #d1d5db;
+      --text: #111827;
+      --text-2: #374151;
+      --text-muted: #6b7280;
+      --text-dim: #9ca3af;
+      --blue: #1d4ed8;
+      --blue-mid: #2563eb;
+      --blue-light: #3b82f6;
+      --blue-bg: #eff6ff;
+      --blue-border: #bfdbfe;
+      --green: #15803d;
+      --green-bg: #f0fdf4;
+      --green-border: #bbf7d0;
+      --red: #b91c1c;
+      --red-bg: #fef2f2;
+      --red-border: #fecaca;
+      --amber: #92400e;
+      --amber-bg: #fffbeb;
+      --amber-border: #fde68a;
+      --purple: #6d28d9;
+      --purple-bg: #f5f3ff;
+      --purple-border: #ddd6fe;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      font-size: 15px;
+    }
+    a { color: var(--blue-mid); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Header ── */
+    header {
+      background: var(--surface);
+      border-bottom: 2px solid var(--blue);
+      padding: 0.875rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .header-left { display: flex; align-items: center; gap: 0.875rem; }
+    .logo {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--blue);
+      letter-spacing: -0.02em;
+    }
+    .header-date {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.2rem 0.6rem;
+      font-weight: 500;
+    }
+    .header-right { display: flex; gap: 0.5rem; align-items: center; }
+    .badge {
+      font-size: 0.68rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+    .badge-gemini {
+      background: var(--blue-bg);
+      color: var(--blue);
+      border: 1px solid var(--blue-border);
+    }
+
+    /* ── Layout ── */
+    .page { max-width: 900px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+
+    /* ── Nav ── */
+    .nav-bar {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .nav-link {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 0.3rem 0.75rem;
+      background: var(--surface);
+      transition: all 0.15s;
+      font-weight: 500;
+    }
+    .nav-link:hover {
+      border-color: var(--blue-light);
+      color: var(--blue);
+      text-decoration: none;
+      background: var(--blue-bg);
+    }
+
+    /* ── Section title ── */
+    .section-title {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+    .card-body { padding: 1.25rem 1.375rem; }
+
+    /* ── Market Overview ── */
+    .overview-text {
+      font-size: 0.975rem;
+      color: var(--text-2);
+      line-height: 1.75;
+      border-left: 3px solid var(--blue);
+      padding-left: 1rem;
+    }
+
+    /* ── Ticker Grid ── */
+    .ticker-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .ticker-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 0.75rem;
+      transition: box-shadow 0.15s;
+    }
+    .ticker-card:hover { box-shadow: 0 1px 6px rgba(0,0,0,0.08); }
+    .ticker-symbol {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .ticker-name {
+      font-size: 0.78rem;
+      color: var(--text-2);
+      margin-top: 0.1rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ticker-price {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-top: 0.35rem;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+    .ticker-change {
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-top: 0.1rem;
+      display: inline-block;
+      padding: 0.1rem 0.35rem;
+      border-radius: 3px;
+    }
+    .up { color: var(--green); background: var(--green-bg); }
+    .dn { color: var(--red); background: var(--red-bg); }
+
+    /* ── Macro Context ── */
+    .macro-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    @media (max-width: 600px) { .macro-grid { grid-template-columns: 1fr; } }
+    .macro-block h3 {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 0.5rem;
+    }
+    .macro-block p {
+      font-size: 0.875rem;
+      color: var(--text-2);
+      line-height: 1.7;
+    }
+    .risk-list, .opp-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .risk-list li {
+      font-size: 0.85rem;
+      color: var(--text-2);
+      padding-left: 1.1rem;
+      position: relative;
+      line-height: 1.5;
+    }
+    .risk-list li::before {
+      content: "▲";
+      position: absolute;
+      left: 0;
+      font-size: 0.6rem;
+      color: var(--red);
+      top: 0.25rem;
+    }
+    .opp-list li {
+      font-size: 0.85rem;
+      color: var(--text-2);
+      padding-left: 1.1rem;
+      position: relative;
+      line-height: 1.5;
+    }
+    .opp-list li::before {
+      content: "★";
+      position: absolute;
+      left: 0;
+      font-size: 0.6rem;
+      color: var(--amber);
+      top: 0.25rem;
+    }
+
+    /* ── News Cards ── */
+    .news-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+    .news-card-header {
+      padding: 1.125rem 1.375rem 0.875rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 0.875rem;
+      align-items: flex-start;
+      background: var(--surface2);
+    }
+    .news-rank {
+      flex-shrink: 0;
+      width: 2rem;
+      height: 2rem;
+      background: var(--blue);
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-top: 0.1rem;
+    }
+    .news-headline {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.45;
+    }
+    .news-headline a { color: var(--text); }
+    .news-headline a:hover { color: var(--blue); text-decoration: underline; }
+    .news-meta {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.3rem;
+    }
+
+    /* Analysis body — full width vertical layout */
+    .news-body {
+      padding: 1.25rem 1.375rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .analysis-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .analysis-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .label-what    { color: var(--blue); }
+    .label-why     { color: var(--amber); }
+    .label-reaction { color: var(--purple); }
+    .label-scenarios { color: var(--green); }
+    .label-contrarian { color: var(--red); }
+    .label-watch   { color: var(--text-muted); }
+
+    .analysis-text {
+      font-size: 0.9rem;
+      color: var(--text-2);
+      line-height: 1.75;
+    }
+
+    /* Scenarios */
+    .scenarios {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .scenario {
+      font-size: 0.875rem;
+      line-height: 1.6;
+      padding: 0.55rem 0.875rem;
+      border-radius: 5px;
+      color: var(--text-2);
+    }
+    .scenario-bull {
+      background: var(--green-bg);
+      border-left: 3px solid var(--green);
+    }
+    .scenario-bull::before { content: "▲ 強気 "; color: var(--green); font-weight: 700; font-size: 0.78rem; }
+    .scenario-base {
+      background: var(--amber-bg);
+      border-left: 3px solid #d97706;
+    }
+    .scenario-base::before { content: "● 中立 "; color: #b45309; font-weight: 700; font-size: 0.78rem; }
+    .scenario-bear {
+      background: var(--red-bg);
+      border-left: 3px solid var(--red);
+    }
+    .scenario-bear::before { content: "▼ 弱気 "; color: var(--red); font-weight: 700; font-size: 0.78rem; }
+
+    /* Divider inside analysis */
+    .analysis-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0.25rem 0;
+    }
+
+    /* ── Watchlist ── */
+    .watchlist-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+      gap: 0.625rem;
+      margin-bottom: 1rem;
+    }
+    .wl-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 0.75rem;
+    }
+    .wl-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.35rem; }
+    .wl-symbol { font-size: 0.65rem; color: var(--text-muted); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+    .wl-change { font-size: 0.75rem; font-weight: 700; }
+    .wl-price { font-size: 1.05rem; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
+    .wl-name { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 0.4rem; }
+    .wl-comment {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      line-height: 1.45;
+      border-top: 1px solid var(--border);
+      padding-top: 0.4rem;
+    }
+    canvas { display: block; width: 100% !important; height: 55px !important; }
+
+    /* ── Editor's Note ── */
+    .editors-note {
+      background: var(--purple-bg);
+      border: 1px solid var(--purple-border);
+      border-left: 3px solid var(--purple);
+      border-radius: 8px;
+      padding: 1.125rem 1.375rem;
+      margin-bottom: 1rem;
+    }
+    .editors-note .note-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: 0.5rem;
+    }
+    .editors-note p {
+      font-size: 0.9rem;
+      color: var(--text-2);
+      line-height: 1.75;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 1.25rem;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      margin-top: 2rem;
+    }
+    footer a { color: var(--text-muted); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <span class="logo">Market Pulse</span>
+      <span class="header-date">2026-04-23</span>
+    </div>
+    <div class="header-right">
+      <span class="badge badge-gemini">Gemini 2.5 Flash</span>
+    </div>
+  </header>
+
+  <div class="page">
+    <!-- Nav -->
+    <nav class="nav-bar">
+      <a class="nav-link" href="#overview">市場概況</a>
+      <a class="nav-link" href="#macro">マクロ分析</a>
+      <a class="nav-link" href="#news">ニュース解説</a>
+      <a class="nav-link" href="#watchlist">ウォッチリスト</a>
+      <a class="nav-link" href="/market-pulse/">← アーカイブ</a>
+    </nav>
+
+    <!-- Market Overview -->
+    <section id="overview">
+      <div class="section-title">Market Overview — 市場概況</div>
+      <div class="card">
+        <div class="card-body">
+          <p class="overview-text">本日のグローバル市場は、米国の主要株価指数がイラン停戦延長報道と堅調な企業決算を背景に過去最高値を更新し、リスクオンムードが優勢となりました。特に半導体関連株が韓国の好調なGDP成長に牽引され大きく上昇。為替市場ではドル高が進行し、USD/JPYは159円台後半で推移。コモディティは地政学リスクとインフレ懸念から金と原油がともに上昇しました。</p>
+        </div>
+      </div>
+
+      <div class="ticker-grid">
+        
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">NVDA</div>
+              <div class="ticker-name" title="NVDA">NVDA</div>
+              <div class="ticker-price">202.50</div>
+              <div class="ticker-change up">
+                +1.31%
+              </div>
+            </div>
+            
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">AAPL</div>
+              <div class="ticker-name" title="AAPL">AAPL</div>
+              <div class="ticker-price">273.17</div>
+              <div class="ticker-change up">
+                +2.63%
+              </div>
+            </div>
+            
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">GOOGL</div>
+              <div class="ticker-name" title="GOOGL">GOOGL</div>
+              <div class="ticker-price">339.32</div>
+              <div class="ticker-change up">
+                +2.12%
+              </div>
+            </div>
+            
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">MSFT</div>
+              <div class="ticker-name" title="MSFT">MSFT</div>
+              <div class="ticker-price">432.92</div>
+              <div class="ticker-change up">
+                +2.07%
+              </div>
+            </div>
+            
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">TSM</div>
+              <div class="ticker-name" title="TSM">TSM</div>
+              <div class="ticker-price">387.44</div>
+              <div class="ticker-change up">
+                +5.26%
+              </div>
+            </div>
+            
+          
+        
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">^GSPC</div>
+              <div class="ticker-name" title="S&P 500">S&P 500</div>
+              <div class="ticker-price">7,137.90</div>
+              <div class="ticker-change up">
+                +1.05%
+              </div>
+            </div>
+            
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">^NDX</div>
+              <div class="ticker-name" title="NASDAQ 100">NASDAQ 100</div>
+              <div class="ticker-price">26,937.28</div>
+              <div class="ticker-change up">
+                +1.73%
+              </div>
+            </div>
+            
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">^DJI</div>
+              <div class="ticker-name" title="Dow Jones">Dow Jones</div>
+              <div class="ticker-price">49,490.03</div>
+              <div class="ticker-change up">
+                +0.69%
+              </div>
+            </div>
+            
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">^N225</div>
+              <div class="ticker-name" title="Nikkei 225">Nikkei 225</div>
+              <div class="ticker-price">59,349.17</div>
+              <div class="ticker-change up">
+                +0.89%
+              </div>
+            </div>
+            
+          
+        
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">JPY=X</div>
+              <div class="ticker-name" title="USD/JPY">USD/JPY</div>
+              <div class="ticker-price">159.37</div>
+              <div class="ticker-change up">
+                +0.33%
+              </div>
+            </div>
+            
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">EURUSD=X</div>
+              <div class="ticker-name" title="EUR/USD">EUR/USD</div>
+              <div class="ticker-price">1.1707</div>
+              <div class="ticker-change dn">
+                -0.32%
+              </div>
+            </div>
+            
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">EURJPY=X</div>
+              <div class="ticker-name" title="EUR/JPY">EUR/JPY</div>
+              <div class="ticker-price">187.17</div>
+              <div class="ticker-change dn">
+                -0.01%
+              </div>
+            </div>
+            
+          
+        
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">GC=F</div>
+              <div class="ticker-name" title="Gold">Gold</div>
+              <div class="ticker-price">4,739.20</div>
+              <div class="ticker-change up">
+                +0.87%
+              </div>
+            </div>
+            
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">CL=F</div>
+              <div class="ticker-name" title="WTI Oil">WTI Oil</div>
+              <div class="ticker-price">92.80</div>
+              <div class="ticker-change up">
+                +0.73%
+              </div>
+            </div>
+            
+          
+        
+      </div>
+    </section>
+
+    <!-- Macro Context -->
+    
+    <section id="macro">
+      <div class="section-title">Global Macro — 世界経済・マクロ分析</div>
+      <div class="card">
+        <div class="card-body">
+          <div class="macro-grid">
+            <div class="macro-block">
+              <h3>世界経済の現状</h3>
+              <p>世界経済は、AI関連需要に牽引される半導体セクターが成長の主要なドライバーとなっています。韓国のQ1 GDPが予想を上回る成長を見せたことは、アジア経済の回復力とグローバルサプライチェーンの堅調さを示唆しています。一方で、中東情勢を巡る地政学リスクは依然としてくすぶり、原油価格や原材料価格に上昇圧力をかけ、インフレの粘着性に対する懸念が根強く残っています。主要中央銀行は利下げ開始時期を慎重に見極める姿勢を維持しており、金融政策の方向性が市場の焦点です。</p>
+            </div>
+            <div class="macro-block">
+              <h3>日本市場への影響</h3>
+              <p>円安ドル高の進行は、日本の輸出企業にとっては追い風となる一方、輸入物価の上昇を通じて国内のインフレ圧力を高める可能性があります。日経225はグローバルなリスクオンセンチメントと半導体関連の好調に支えられ堅調に推移していますが、原油高や原材料高は国内企業のコスト増要因となり、企業収益への影響を注視する必要があります。日銀の金融政策正常化への動きと為替市場の動向が、日本市場の短期的な方向性を決定づけるでしょう。</p>
+            </div>
+          </div>
+
+          
+          <div class="macro-grid" style="margin-top: 1rem;">
+            
+            <div class="macro-block">
+              <h3>主なリスク要因</h3>
+              <ul class="risk-list">
+                
+                <li>中東情勢の再悪化や米国の対イラン政策強化による地政学リスクの顕在化は、原油価格の急騰と広範なインフレ再燃を招く可能性があります。</li>
+                
+                <li>主要国におけるインフレの粘着性が予想以上に強く、中央銀行が金融引き締めスタンスを長期化させることで、景気減速リスクが高まる可能性があります。</li>
+                
+                <li>テクノロジー大手に対する世界的な規制強化の動きが加速し、GAFAMなどの収益モデルに構造的な影響を与えることで、株式市場全体の重しとなる可能性があります。</li>
+                
+                <li>過度なAI関連投資がバブル化し、需要のピークアウトや過剰供給が顕在化した場合、半導体セクターを中心に急激な調整リスクがあります。</li>
+                
+              </ul>
+            </div>
+            
+            
+            <div class="macro-block">
+              <h3>注目の機会</h3>
+              <ul class="opp-list">
+                
+                <li>AI技術の進化と普及は、半導体、データセンター、ソフトウェアなど広範な産業に新たな成長機会をもたらし、関連企業の業績を押し上げるでしょう。</li>
+                
+                <li>円安基調は、自動車、機械、精密機器などの日本の輸出企業にとって競争力向上と収益拡大の好機となり、日本株の相対的な魅力を高めます。</li>
+                
+                <li>グローバルなサプライチェーン再編や脱炭素化への動きは、特定の技術や素材を持つ日本企業に新たなビジネスチャンスを提供します。</li>
+                
+              </ul>
+            </div>
+            
+          </div>
+          
+        </div>
+      </div>
+    </section>
+    
+
+    <!-- News Analysis -->
+    <section id="news">
+      <div class="section-title">News Analysis — ニュース詳細解説 (Top 5)</div>
+      
+      <article class="news-card">
+        <div class="news-card-header">
+          <div class="news-rank">01</div>
+          <div>
+            <div class="news-headline">
+              
+              <a href="https://investinglive.com/news/south-korea-q1-growth-surges-past-forecasts-on-semiconductor-export-boom-20260422/" target="_blank" rel="noopener noreferrer">South Korea Q1 growth surges past forecasts on semiconductor export boom</a>
+              
+            </div>
+            <div class="news-meta">Forexlive</div>
+          </div>
+        </div>
+        <div class="news-body">
+          <div class="analysis-row">
+            <div class="analysis-label label-what">What Happened — 何が起きたか</div>
+            <p class="analysis-text">韓国の2026年第1四半期GDPは前期比1.7%、前年同期比3.6%と、市場予想を大幅に上回る成長を記録しました。この成長は、半導体輸出が5.1%急増したことが主因であり、AI関連需要の力強さと外部需要への依存度が高いことを示しています。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-why">Why It Matters — なぜ重要か</div>
+            <p class="analysis-text">このデータは、グローバルな半導体サイクルが力強く回復していること、特にAI関連技術への需要が世界経済の成長を牽引していることを明確に示しています。アジアの主要輸出国である韓国の好調は、グローバルサプライチェーンの健全性と、テクノロジーセクターの持続的な成長期待を裏付けるものです。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-reaction">Market Reaction — 市場への影響</div>
+            <p class="analysis-text">半導体関連株、特に台湾積体電路製造（TSM）が5.26%高と大きく上昇し、NVIDIA（NVDA）も堅調に推移しました。アジア市場全体にもポジティブなセンチメントが波及し、グローバルなリスクオンムードを後押ししました。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-scenarios">3 Scenarios — シナリオ分析</div>
+            <div class="scenarios">
+              <div class="scenario scenario-bull">AI需要が予想を上回るペースで拡大し、半導体サイクルがさらに加速することで、グローバル経済の成長が力強く牽引され、関連企業の業績が大幅に向上します。</div>
+              <div class="scenario scenario-base">半導体需要は堅調に推移し、韓国経済も安定成長を続けるものの、他のセクターの回復は緩やかで、グローバル経済全体への波及効果は限定的となります。</div>
+              <div class="scenario scenario-bear">AI関連投資の過熱感が冷め、半導体需要がピークアウトする懸念が浮上。過剰在庫問題が再燃し、韓国経済やグローバルテクノロジーセクターに調整圧力がかかります。</div>
+            </div>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-contrarian">Contrarian View — 逆張り視点</div>
+            <p class="analysis-text">現在の半導体需要は特定のAI関連分野に集中しており、広範な実体経済の回復には繋がっていない可能性があります。需要の偏りが是正された際に、成長の持続性に疑問符がつくかもしれません。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-watch">What to Watch — 次の注目ポイント</div>
+            <p class="analysis-text">主要半導体メーカーの四半期決算発表、AI関連企業の設備投資計画、グローバル製造業PMIの新規受注指数、そして韓国の月次輸出データにおける半導体以外の品目の動向に注目します。</p>
+          </div>
+        </div>
+      </article>
+      
+      <article class="news-card">
+        <div class="news-card-header">
+          <div class="news-rank">02</div>
+          <div>
+            <div class="news-headline">
+              
+              <a href="https://news.google.com/rss/articles/CBMipwFBVV95cUxOTE1IRDNDTDNBUmcwZFVXOW40dldfSmc0YzU3WHZGb3pxZzJCY1RVWmotelJHa0g4SURfUHQwdFh3cTk5LTUwR283Z2NxWE5IdjVrUnNScERKaU56TkpnbkhaTk5ucGZCWHpDVVRmdUpGMjRDUjBHV3BSSGdDSFdrbzB4NVd3T0doSnhzajQwMWFYdjRRRVpxLU4tSm04R05WR0IzbUNTNA?oc=5" target="_blank" rel="noopener noreferrer">S&P, Nasdaq close at records on Iran ceasefire extension, earnings - Reuters</a>
+              
+            </div>
+            <div class="news-meta">Reuters</div>
+          </div>
+        </div>
+        <div class="news-body">
+          <div class="analysis-row">
+            <div class="analysis-label label-what">What Happened — 何が起きたか</div>
+            <p class="analysis-text">イランでの停戦延長の報道と、市場予想を上回る企業決算が相次いだことを受け、S&P 500とNASDAQは過去最高値を更新して取引を終えました。地政学リスクの一時的な緩和と企業業績の堅調さが、投資家心理を改善させました。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-why">Why It Matters — なぜ重要か</div>
+            <p class="analysis-text">地政学リスクの緩和は、市場の不確実性を低下させ、リスクオン投資を促進します。また、企業決算の好調は、高金利環境下でも企業が収益を上げられることを示し、株式市場のファンダメンタルズを支える重要な要素となります。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-reaction">Market Reaction — 市場への影響</div>
+            <p class="analysis-text">S&P 500は1.05%、NASDAQ 100は1.73%上昇し、市場全体のリスク選好度が高まりました。特にテクノロジー株が堅調に推移し、幅広いセクターで買いが入りました。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-scenarios">3 Scenarios — シナリオ分析</div>
+            <div class="scenarios">
+              <div class="scenario scenario-bull">中東情勢がさらに安定化し、企業業績が引き続き市場予想を上回ることで、株式市場は一段と上昇し、新たな高値を更新するでしょう。</div>
+              <div class="scenario scenario-base">地政学リスクはくすぶりつつも、企業業績は堅調に推移し、株式市場は高値圏でのレンジ相場を形成すると考えられます。</div>
+              <div class="scenario scenario-bear">停戦が破綻し中東情勢が再悪化するか、企業決算が今後悪化傾向に転じることで、市場はリスクオフに傾き、調整局面を迎える可能性があります。</div>
+            </div>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-contrarian">Contrarian View — 逆張り視点</div>
+            <p class="analysis-text">地政学リスクの緩和は一時的なものに過ぎず、根本的な問題は解決されていません。また、現在の株価は既に好材料を織り込み済みであり、過熱感から調整が入る可能性も考慮すべきです。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-watch">What to Watch — 次の注目ポイント</div>
+            <p class="analysis-text">中東情勢に関する新たな報道、主要企業の今後の決算発表、そしてFRB高官からの金融政策に関する発言に注目し、市場のセンチメント変化の兆候を捉える必要があります。</p>
+          </div>
+        </div>
+      </article>
+      
+      <article class="news-card">
+        <div class="news-card-header">
+          <div class="news-rank">03</div>
+          <div>
+            <div class="news-headline">
+              
+              <a href="https://news.google.com/rss/articles/CBMiugFBVV95cUxOY0dac0FOcTVjR1h4cW5PS0FxVVdkRUlsU3VfMWdZOVRialU3S3cxNl9ZOVZOOWtMekJsdWFnZ21aNENlaFA1Q3E5QlQ3NE5Ea0lYdDVteU5RWGNpNTU2OHhZMzZCZGJiRXZPTnFwWVluT20wUWxVMHA4Q2NfM21IWlB0OWxiblY0cTlzY29KWkpiQUpVcWtkVnNscjBKX2hKTjRESld1b3ZxY0NsOHFYV1RLbVpRdmN4OXc?oc=5" target="_blank" rel="noopener noreferrer">Exclusive: US intercepts three Iranian oil tankers in Asian waters, sources say - Reuters</a>
+              
+            </div>
+            <div class="news-meta">Reuters</div>
+          </div>
+        </div>
+        <div class="news-body">
+          <div class="analysis-row">
+            <div class="analysis-label label-what">What Happened — 何が起きたか</div>
+            <p class="analysis-text">米国がアジア海域でイランの石油タンカー3隻を阻止したと報じられました。これは、米国の対イラン制裁の継続と、イランの原油輸出を制限する取り組みの一環と見られます。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-why">Why It Matters — なぜ重要か</div>
+            <p class="analysis-text">この行動は、中東における地政学的な緊張が依然として高いことを示しており、原油供給に対する潜在的なリスク要因となります。米国の制裁強化は、イランの原油輸出能力に影響を与え、グローバルな原油市場の需給バランスに影響を及ぼす可能性があります。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-reaction">Market Reaction — 市場への影響</div>
+            <p class="analysis-text">WTI原油価格は0.73%上昇し、92.8ドルとなりました。地政学リスクプレミアムが維持され、原油供給への懸念が価格を押し上げる要因となりました。金価格も安全資産としての需要から上昇しました。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-scenarios">3 Scenarios — シナリオ分析</div>
+            <div class="scenarios">
+              <div class="scenario scenario-bull">外交努力により緊張が緩和され、米国の行動が一時的なものにとどまり、原油供給への影響は限定的であると市場が判断します。</div>
+              <div class="scenario scenario-base">米国とイラン間の緊張状態は継続するものの、大規模な供給途絶には至らず、原油価格は地政学リスクプレミアムを織り込みつつ高止まりします。</div>
+              <div class="scenario scenario-bear">イランが報復措置を取り、ホルムズ海峡などの主要航路が脅かされることで、原油供給が大幅に途絶し、原油価格が急騰、世界経済に深刻な影響を与えます。</div>
+            </div>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-contrarian">Contrarian View — 逆張り視点</div>
+            <p class="analysis-text">米国の対イラン政策は既定路線であり、市場は既に一定程度織り込み済みである可能性があります。また、グローバル経済の減速懸念から需要が伸び悩み、供給過剰懸念が優勢になる可能性も考慮すべきです。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-watch">What to Watch — 次の注目ポイント</div>
+            <p class="analysis-text">米国の対イラン政策の今後の動向、OPEC+の原油生産調整に関する決定、そしてグローバルな原油在庫データや需要予測の更新に注目します。</p>
+          </div>
+        </div>
+      </article>
+      
+      <article class="news-card">
+        <div class="news-card-header">
+          <div class="news-rank">04</div>
+          <div>
+            <div class="news-headline">
+              
+              <a href="https://finnhub.io/api/news?id=56d89a2ec0eec6b9375b9e79c91f1904e3ab6ce8f27c22ad4523c4de14bdeb1d" target="_blank" rel="noopener noreferrer">Indian Antitrust Push Tests Apple App Store Model And Valuation Narrative</a>
+              
+            </div>
+            <div class="news-meta">Yahoo</div>
+          </div>
+        </div>
+        <div class="news-body">
+          <div class="analysis-row">
+            <div class="analysis-label label-what">What Happened — 何が起きたか</div>
+            <p class="analysis-text">インドの競争委員会（CCI）が、AppleのApp Storeルールに関する独占禁止法違反の最終審理に移行しています。Appleが要求されたデータを提供しなかったため、手続きが加速されたと報じられています。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-why">Why It Matters — なぜ重要か</div>
+            <p class="analysis-text">この動きは、世界的に強まるテクノロジー大手への規制強化のトレンドを反映しており、AppleのApp Storeビジネスモデル、特に高額な手数料体系に大きな影響を与える可能性があります。これは、同社の収益性や将来の成長見通しに懸念をもたらす構造的な問題です。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-reaction">Market Reaction — 市場への影響</div>
+            <p class="analysis-text">Apple（AAPL）株は2.63%上昇しましたが、これは市場全体の好調な流れに乗り、このニュースの影響が限定的であったためと考えられます。しかし、規制強化の動きは潜在的な下押し圧力として認識されており、他のテクノロジー大手への波及懸念も存在します。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-scenarios">3 Scenarios — シナリオ分析</div>
+            <div class="scenarios">
+              <div class="scenario scenario-bull">Appleがインド当局と和解し、ビジネスモデルへの影響は限定的であるか、または軽微な変更で済むことで、市場の懸念が払拭されます。</div>
+              <div class="scenario scenario-base">Appleは罰金や一部ビジネスモデルの変更を余儀なくされるものの、その強固なブランド力とエコシステムにより、長期的な成長見通しは維持されます。</div>
+              <div class="scenario scenario-bear">インドでの規制強化が他の主要国（EU、米国など）にも波及し、Appleの収益構造に大きな打撃を与え、株価が大幅に調整する可能性があります。</div>
+            </div>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-contrarian">Contrarian View — 逆張り視点</div>
+            <p class="analysis-text">AppleのApp Storeは、開発者にとって依然として最も魅力的なプラットフォームであり、規制による影響は一時的なものに過ぎません。同社のサービス部門の成長は、今後も持続可能であると見ることもできます。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-watch">What to Watch — 次の注目ポイント</div>
+            <p class="analysis-text">インド競争委員会の最終決定、EUや米国の同様の独占禁止法関連の動向、そしてAppleが今後発表する収益報告におけるサービス部門の成長率と利益率の変化に注目します。</p>
+          </div>
+        </div>
+      </article>
+      
+      <article class="news-card">
+        <div class="news-card-header">
+          <div class="news-rank">05</div>
+          <div>
+            <div class="news-headline">
+              
+              <a href="https://finnhub.io/api/news?id=f4f288a46c84db16e08dc938aa2093b973f7d73c1f2b3d9d31c683d529a63a6e" target="_blank" rel="noopener noreferrer">This Is Why Exxon Mobil Corporation (XOM) Is Hiking Plastics Prices</a>
+              
+            </div>
+            <div class="news-meta">Yahoo</div>
+          </div>
+        </div>
+        <div class="news-body">
+          <div class="analysis-row">
+            <div class="analysis-label label-what">What Happened — 何が起きたか</div>
+            <p class="analysis-text">エクソンモービルがプラスチック製品の価格を引き上げています。これは、米国とイスラエル間の紛争に起因する供給ショックが背景にあると報じられています。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-why">Why It Matters — なぜ重要か</div>
+            <p class="analysis-text">このニュースは、地政学リスクが単に原油価格だけでなく、その派生製品であるプラスチックなどの原材料価格にも直接的な影響を与え、広範なインフレ圧力を高める具体的な例を示しています。企業のコスト転嫁能力と、それが最終消費者にどう波及するかが重要です。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-reaction">Market Reaction — 市場への影響</div>
+            <p class="analysis-text">このニュース自体が市場に与える直接的な影響は限定的でしたが、インフレ懸念の再燃を促し、素材セクターへの注目を高める可能性があります。また、プラスチックを原材料とする消費財メーカーにとってはコスト増要因となります。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-scenarios">3 Scenarios — シナリオ分析</div>
+            <div class="scenarios">
+              <div class="scenario scenario-bull">供給ショックが一時的なものであり、価格上昇も限定的で、企業は効率的なコスト管理で対応し、利益率を維持します。</div>
+              <div class="scenario scenario-base">原材料価格の高止まりは続くものの、企業は段階的な価格転嫁で対応し、消費者も一定程度受け入れることで、市場への大きな混乱は回避されます。</div>
+              <div class="scenario scenario-bear">供給ショックが長期化し、プラスチックを含む原材料価格が広範に高騰。企業はコスト転嫁しきれず利益率が圧迫され、最終的に消費需要を抑制し景気減速を招きます。</div>
+            </div>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-contrarian">Contrarian View — 逆張り視点</div>
+            <p class="analysis-text">需要の減速や代替素材へのシフトが進むことで、企業が価格転嫁しきれず、利益率が圧迫される可能性もあります。供給ショックの影響は一時的で、市場の競争原理が価格上昇を抑制するかもしれません。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-watch">What to Watch — 次の注目ポイント</div>
+            <p class="analysis-text">中東情勢の進展、製造業PMIの価格指数、主要企業の決算発表における原材料コストの動向、そして消費者物価指数（CPI）のプラスチック製品関連項目の動きに注目します。</p>
+          </div>
+        </div>
+      </article>
+      
+    </section>
+
+    <!-- Watchlist -->
+    <section id="watchlist">
+      <div class="section-title">Watchlist — 主要銘柄・指数</div>
+      <div class="watchlist-grid">
+        
+        <div class="wl-card">
+          <div class="wl-header">
+            <div>
+              <div class="wl-symbol">^N225</div>
+              <div class="wl-name">日経225</div>
+            </div>
+            <div class="wl-change up">
+              +0.89%
+            </div>
+          </div>
+          <div class="wl-price">59,349.17</div>
+          
+          <canvas id="chart--N225"></canvas>
+          
+          <div class="wl-comment">グローバルなリスクオンと半導体関連の好調に支えられ堅調に推移しており、円安も輸出企業には追い風ですが、地政学リスクとインフレ動向には引き続き注意が必要です。</div>
+        </div>
+        
+        <div class="wl-card">
+          <div class="wl-header">
+            <div>
+              <div class="wl-symbol">USD/JPY</div>
+              <div class="wl-name">米ドル/日本円</div>
+            </div>
+            <div class="wl-change up">
+              +0.33%
+            </div>
+          </div>
+          <div class="wl-price">159.37</div>
+          
+          <div class="wl-comment">ドル高円安基調が継続しており、日米金利差の拡大が背景にありますが、日本の当局による介入警戒感も高まっており、短期的な変動リスクに注意が必要です。</div>
+        </div>
+        
+        <div class="wl-card">
+          <div class="wl-header">
+            <div>
+              <div class="wl-symbol">TSM</div>
+              <div class="wl-name">台湾積体電路製造</div>
+            </div>
+            <div class="wl-change up">
+              +5.26%
+            </div>
+          </div>
+          <div class="wl-price">387.44</div>
+          
+          <canvas id="chart-TSM"></canvas>
+          
+          <div class="wl-comment">韓国のGDPデータが示すように、AI関連需要に牽引される半導体サイクルの回復を象徴する銘柄であり、今後のグローバルテクノロジー投資の動向を占う上で重要です。</div>
+        </div>
+        
+        <div class="wl-card">
+          <div class="wl-header">
+            <div>
+              <div class="wl-symbol">AAPL</div>
+              <div class="wl-name">アップル</div>
+            </div>
+            <div class="wl-change up">
+              +2.63%
+            </div>
+          </div>
+          <div class="wl-price">273.17</div>
+          
+          <canvas id="chart-AAPL"></canvas>
+          
+          <div class="wl-comment">市場全体の好調に乗り上昇しましたが、インドでの独占禁止法調査など、世界的なテクノロジー大手への規制強化の動きが潜在的なリスク要因として注視されます。</div>
+        </div>
+        
+        <div class="wl-card">
+          <div class="wl-header">
+            <div>
+              <div class="wl-symbol">GC=F</div>
+              <div class="wl-name">金</div>
+            </div>
+            <div class="wl-change up">
+              +0.87%
+            </div>
+          </div>
+          <div class="wl-price">4,739.20</div>
+          
+          <canvas id="chart-GC=F"></canvas>
+          
+          <div class="wl-comment">地政学リスクの継続とインフレ懸念から安全資産としての需要が高まっており、中東情勢の動向や主要国の金融政策によって価格が変動しやすい状況です。</div>
+        </div>
+        
+        <div class="wl-card">
+          <div class="wl-header">
+            <div>
+              <div class="wl-symbol">CL=F</div>
+              <div class="wl-name">WTI原油</div>
+            </div>
+            <div class="wl-change up">
+              +0.73%
+            </div>
+          </div>
+          <div class="wl-price">92.80</div>
+          
+          <canvas id="chart-CL=F"></canvas>
+          
+          <div class="wl-comment">米国のイランタンカー阻止報道など、中東情勢の緊張が供給懸念を高め、価格を押し上げていますが、グローバル経済の減速懸念が需要を抑制する可能性も考慮されます。</div>
+        </div>
+        
+        <div class="wl-card">
+          <div class="wl-header">
+            <div>
+              <div class="wl-symbol">^GSPC</div>
+              <div class="wl-name">S&P 500</div>
+            </div>
+            <div class="wl-change up">
+              +1.05%
+            </div>
+          </div>
+          <div class="wl-price">7,137.90</div>
+          
+          <canvas id="chart--GSPC"></canvas>
+          
+          <div class="wl-comment">イラン停戦延長と堅調な企業決算を背景に過去最高値を更新し、市場のリスクオンセンチメントを牽引していますが、高値圏での調整リスクも意識される水準です。</div>
+        </div>
+        
+      </div>
+    </section>
+
+    <!-- Editor's Note -->
+    <section>
+      <div class="section-title">Editor's Note — 編集後記</div>
+      <div class="editors-note">
+        <div class="note-label">Analyst Comment</div>
+        <p>本日の市場は、地政学リスクの一時的な緩和とテクノロジーセクターの力強い成長が相まって、主要指数が過去最高値を更新する活況を見せました。特に半導体需要の強さは、AIが牽引する新たな経済成長の波を明確に示唆しています。日本人投資家の皆様には、円安の恩恵を享受しつつも、中東情勢の不確実性や主要国におけるインフレの粘着性、そしてテクノロジー大手への規制強化といった潜在的なリスク要因を常に意識し、ポートフォリオの分散とリスク管理を徹底していただくことを推奨いたします。短期的なニュースフローに一喜一憂せず、中長期的な視点での投資戦略が肝要です。</p>
+      </div>
+    </section>
+
+  </div><!-- /page -->
+
+  <footer>
+    Market Pulse © 2026 &nbsp;|&nbsp; GitHub Actions + Gemini 2.5 Flash &nbsp;|&nbsp;
+    <a href="/market-pulse/">アーカイブ一覧</a>
+  </footer>
+
+  <script>
+    const chartData = [{"id": "^N225", "dates": ["03/12", "03/13", "03/16", "03/17", "03/18", "03/19", "03/23", "03/24", "03/25", "03/26", "03/27", "03/30", "03/31", "04/01", "04/02", "04/03", "04/06", "04/07", "04/08", "04/09", "04/10", "04/13", "04/14", "04/15", "04/16", "04/17", "04/20", "04/21"], "prices": [54452.9609, 53819.6094, 53751.1484, 53700.3906, 55239.3984, 53372.5312, 51515.4883, 52252.2812, 53749.6211, 53603.6484, 53373.0703, 51885.8516, 51063.7188, 53739.6797, 52463.2695, 53123.4883, 53413.6797, 53429.5586, 56308.4219, 55895.3203, 56924.1094, 56502.7695, 57877.3906, 58134.2383, 59518.3398, 58475.8984, 58824.8906, 59349.1719], "up": true}, {"id": "TSM", "dates": ["03/11", "03/12", "03/13", "03/16", "03/17", "03/18", "03/19", "03/20", "03/23", "03/24", "03/25", "03/26", "03/27", "03/30", "03/31", "04/01", "04/02", "04/06", "04/07", "04/08", "04/09", "04/10", "04/13", "04/14", "04/15", "04/16", "04/17", "04/20", "04/21", "04/22"], "prices": [353.5637, 335.7639, 337.3594, 339.274, 345.98, 339.57, 338.79, 329.24, 338.45, 343.25, 347.75, 326.11, 326.74, 316.5, 337.95, 341.49, 339.04, 341.76, 345.32, 365.9, 365.49, 370.6, 369.57, 379.89, 375.1, 363.35, 370.5, 366.24, 368.08, 387.44], "up": true}, {"id": "AAPL", "dates": ["03/11", "03/12", "03/13", "03/16", "03/17", "03/18", "03/19", "03/20", "03/23", "03/24", "03/25", "03/26", "03/27", "03/30", "03/31", "04/01", "04/02", "04/06", "04/07", "04/08", "04/09", "04/10", "04/13", "04/14", "04/15", "04/16", "04/17", "04/20", "04/21", "04/22"], "prices": [260.81, 255.76, 250.12, 252.82, 254.23, 249.94, 248.96, 247.99, 251.49, 251.64, 252.62, 252.89, 248.8, 246.63, 253.79, 255.63, 255.92, 258.86, 253.5, 258.9, 260.49, 260.48, 259.2, 258.83, 266.43, 263.4, 270.23, 273.05, 266.17, 273.17], "up": true}, {"id": "GC=F", "dates": ["03/18", "03/19", "03/20", "03/23", "03/24", "03/25", "03/26", "03/27", "03/30", "03/31", "04/01", "04/02", "04/06", "04/07", "04/08", "04/09", "04/10", "04/13", "04/14", "04/15", "04/16", "04/17", "04/20", "04/21", "04/22"], "prices": [4889.8999, 4600.7002, 4570.3999, 4404.1001, 4399.2998, 4549.7998, 4375.5, 4492.0, 4526.0, 4647.6001, 4783.2002, 4651.5, 4656.7998, 4657.1001, 4749.5, 4792.2002, 4761.8999, 4742.3999, 4825.0, 4800.0, 4785.3999, 4857.6001, 4806.6001, 4698.3999, 4739.2002], "up": false}, {"id": "CL=F", "dates": ["03/18", "03/19", "03/20", "03/23", "03/24", "03/25", "03/26", "03/27", "03/30", "03/31", "04/01", "04/02", "04/06", "04/07", "04/08", "04/09", "04/10", "04/13", "04/14", "04/15", "04/16", "04/17", "04/20", "04/21", "04/22"], "prices": [96.32, 96.14, 98.32, 88.13, 92.35, 90.32, 94.48, 99.64, 102.88, 101.38, 100.12, 111.54, 112.41, 112.95, 94.41, 97.87, 96.57, 99.08, 91.28, 91.29, 94.69, 83.85, 89.61, 92.13, 92.8], "up": false}, {"id": "^GSPC", "dates": ["03/11", "03/12", "03/13", "03/16", "03/17", "03/18", "03/19", "03/20", "03/23", "03/24", "03/25", "03/26", "03/27", "03/30", "03/31", "04/01", "04/02", "04/06", "04/07", "04/08", "04/09", "04/10", "04/13", "04/14", "04/15", "04/16", "04/17", "04/20", "04/21", "04/22"], "prices": [6775.7998, 6672.6201, 6632.1899, 6699.3799, 6716.0898, 6624.7002, 6606.4902, 6506.48, 6581.0, 6556.3701, 6591.8999, 6477.1602, 6368.8501, 6343.7202, 6528.52, 6575.3198, 6582.6899, 6611.8301, 6616.8501, 6782.8101, 6824.6602, 6816.8901, 6886.2402, 6967.3799, 7022.9502, 7041.2798, 7126.0601, 7109.1401, 7064.0098, 7137.8999], "up": true}];
+    chartData.forEach(({ id, dates, prices, up }) => {
+      const safeId = id.replace(/\//g, '-').replace(/\^/g, '-');
+      const canvas = document.getElementById('chart-' + safeId);
+      if (!canvas) return;
+      const color = up ? '#15803d' : '#b91c1c';
+      new Chart(canvas, {
+        type: 'line',
+        data: {
+          labels: dates,
+          datasets: [{
+            data: prices,
+            borderColor: color,
+            borderWidth: 1.5,
+            pointRadius: 0,
+            fill: true,
+            backgroundColor: up ? 'rgba(21,128,61,0.08)' : 'rgba(185,28,28,0.08)',
+            tension: 0.3,
+          }]
+        },
+        options: {
+          animation: false,
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { enabled: false } },
+          scales: { x: { display: false }, y: { display: false } },
+        }
+      });
+    });
+  </script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/market-pulse/sw.js');
+    }
+  </script>
+</body>
+</html>
