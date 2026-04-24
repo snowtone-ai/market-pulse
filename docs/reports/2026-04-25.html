@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="Market Pulse 2026-04-25 — 朝の市場レポート">
+  <title>Market Pulse 2026-04-25</title>
+  <link rel="manifest" href="/market-pulse/manifest.json">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f0f2f5;
+      --surface: #ffffff;
+      --surface2: #f9fafb;
+      --surface3: #f3f4f6;
+      --border: #e5e7eb;
+      --border2: #d1d5db;
+      --text: #111827;
+      --text-2: #374151;
+      --text-muted: #6b7280;
+      --text-dim: #9ca3af;
+      --blue: #1d4ed8;
+      --blue-mid: #2563eb;
+      --blue-light: #3b82f6;
+      --blue-bg: #eff6ff;
+      --blue-border: #bfdbfe;
+      --green: #15803d;
+      --green-bg: #f0fdf4;
+      --green-border: #bbf7d0;
+      --red: #b91c1c;
+      --red-bg: #fef2f2;
+      --red-border: #fecaca;
+      --amber: #92400e;
+      --amber-bg: #fffbeb;
+      --amber-border: #fde68a;
+      --purple: #6d28d9;
+      --purple-bg: #f5f3ff;
+      --purple-border: #ddd6fe;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      font-size: 15px;
+    }
+    a { color: var(--blue-mid); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Header ── */
+    header {
+      background: var(--surface);
+      border-bottom: 2px solid var(--blue);
+      padding: 0.875rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .header-left { display: flex; align-items: center; gap: 0.875rem; }
+    .logo {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--blue);
+      letter-spacing: -0.02em;
+    }
+    .header-date {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.2rem 0.6rem;
+      font-weight: 500;
+    }
+    .header-right { display: flex; gap: 0.5rem; align-items: center; }
+    .badge {
+      font-size: 0.68rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+    .badge-gemini {
+      background: var(--blue-bg);
+      color: var(--blue);
+      border: 1px solid var(--blue-border);
+    }
+
+    /* ── Layout ── */
+    .page { max-width: 900px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+
+    /* ── Nav ── */
+    .nav-bar {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .nav-link {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 0.3rem 0.75rem;
+      background: var(--surface);
+      transition: all 0.15s;
+      font-weight: 500;
+    }
+    .nav-link:hover {
+      border-color: var(--blue-light);
+      color: var(--blue);
+      text-decoration: none;
+      background: var(--blue-bg);
+    }
+
+    /* ── Section title ── */
+    .section-title {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+    .card-body { padding: 1.25rem 1.375rem; }
+
+    /* ── Market Overview ── */
+    .overview-text {
+      font-size: 0.975rem;
+      color: var(--text-2);
+      line-height: 1.75;
+      border-left: 3px solid var(--blue);
+      padding-left: 1rem;
+    }
+
+    /* ── Ticker Grid ── */
+    .ticker-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .ticker-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 0.75rem;
+      transition: box-shadow 0.15s;
+    }
+    .ticker-card:hover { box-shadow: 0 1px 6px rgba(0,0,0,0.08); }
+    .ticker-symbol {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .ticker-name {
+      font-size: 0.78rem;
+      color: var(--text-2);
+      margin-top: 0.1rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ticker-price {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-top: 0.35rem;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+    .ticker-change {
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-top: 0.1rem;
+      display: inline-block;
+      padding: 0.1rem 0.35rem;
+      border-radius: 3px;
+    }
+    .up { color: var(--green); background: var(--green-bg); }
+    .dn { color: var(--red); background: var(--red-bg); }
+
+    /* ── Macro Context ── */
+    .macro-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    @media (max-width: 600px) { .macro-grid { grid-template-columns: 1fr; } }
+    .macro-block h3 {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 0.5rem;
+    }
+    .macro-block p {
+      font-size: 0.875rem;
+      color: var(--text-2);
+      line-height: 1.7;
+    }
+    .risk-list, .opp-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .risk-list li {
+      font-size: 0.85rem;
+      color: var(--text-2);
+      padding-left: 1.1rem;
+      position: relative;
+      line-height: 1.5;
+    }
+    .risk-list li::before {
+      content: "▲";
+      position: absolute;
+      left: 0;
+      font-size: 0.6rem;
+      color: var(--red);
+      top: 0.25rem;
+    }
+    .opp-list li {
+      font-size: 0.85rem;
+      color: var(--text-2);
+      padding-left: 1.1rem;
+      position: relative;
+      line-height: 1.5;
+    }
+    .opp-list li::before {
+      content: "★";
+      position: absolute;
+      left: 0;
+      font-size: 0.6rem;
+      color: var(--amber);
+      top: 0.25rem;
+    }
+
+    /* ── News Cards ── */
+    .news-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+    .news-card-header {
+      padding: 1.125rem 1.375rem 0.875rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 0.875rem;
+      align-items: flex-start;
+      background: var(--surface2);
+    }
+    .news-rank {
+      flex-shrink: 0;
+      width: 2rem;
+      height: 2rem;
+      background: var(--blue);
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-top: 0.1rem;
+    }
+    .news-headline {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.45;
+    }
+    .news-headline a { color: var(--text); }
+    .news-headline a:hover { color: var(--blue); text-decoration: underline; }
+    .news-meta {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.3rem;
+    }
+
+    /* Analysis body — full width vertical layout */
+    .news-body {
+      padding: 1.25rem 1.375rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .analysis-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .analysis-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .label-what    { color: var(--blue); }
+    .label-why     { color: var(--amber); }
+    .label-reaction { color: var(--purple); }
+    .label-scenarios { color: var(--green); }
+    .label-contrarian { color: var(--red); }
+    .label-watch   { color: var(--text-muted); }
+
+    .analysis-text {
+      font-size: 0.9rem;
+      color: var(--text-2);
+      line-height: 1.75;
+    }
+
+    /* Scenarios */
+    .scenarios {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .scenario {
+      font-size: 0.875rem;
+      line-height: 1.6;
+      padding: 0.55rem 0.875rem;
+      border-radius: 5px;
+      color: var(--text-2);
+    }
+    .scenario-bull {
+      background: var(--green-bg);
+      border-left: 3px solid var(--green);
+    }
+    .scenario-bull::before { content: "▲ 強気 "; color: var(--green); font-weight: 700; font-size: 0.78rem; }
+    .scenario-base {
+      background: var(--amber-bg);
+      border-left: 3px solid #d97706;
+    }
+    .scenario-base::before { content: "● 中立 "; color: #b45309; font-weight: 700; font-size: 0.78rem; }
+    .scenario-bear {
+      background: var(--red-bg);
+      border-left: 3px solid var(--red);
+    }
+    .scenario-bear::before { content: "▼ 弱気 "; color: var(--red); font-weight: 700; font-size: 0.78rem; }
+
+    /* Divider inside analysis */
+    .analysis-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0.25rem 0;
+    }
+
+    /* ── Watchlist ── */
+    .watchlist-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+      gap: 0.625rem;
+      margin-bottom: 1rem;
+    }
+    .wl-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 0.75rem;
+    }
+    .wl-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.35rem; }
+    .wl-symbol { font-size: 0.65rem; color: var(--text-muted); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+    .wl-change { font-size: 0.75rem; font-weight: 700; }
+    .wl-price { font-size: 1.05rem; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
+    .wl-name { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 0.4rem; }
+    .wl-comment {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      line-height: 1.45;
+      border-top: 1px solid var(--border);
+      padding-top: 0.4rem;
+    }
+    canvas { display: block; width: 100% !important; height: 55px !important; }
+
+    /* ── Editor's Note ── */
+    .editors-note {
+      background: var(--purple-bg);
+      border: 1px solid var(--purple-border);
+      border-left: 3px solid var(--purple);
+      border-radius: 8px;
+      padding: 1.125rem 1.375rem;
+      margin-bottom: 1rem;
+    }
+    .editors-note .note-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: 0.5rem;
+    }
+    .editors-note p {
+      font-size: 0.9rem;
+      color: var(--text-2);
+      line-height: 1.75;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 1.25rem;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      margin-top: 2rem;
+    }
+    footer a { color: var(--text-muted); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <span class="logo">Market Pulse</span>
+      <span class="header-date">2026-04-25</span>
+    </div>
+    <div class="header-right">
+      <span class="badge badge-gemini">Gemini 2.5 Flash</span>
+    </div>
+  </header>
+
+  <div class="page">
+    <!-- Nav -->
+    <nav class="nav-bar">
+      <a class="nav-link" href="#overview">市場概況</a>
+      <a class="nav-link" href="#macro">マクロ分析</a>
+      <a class="nav-link" href="#news">ニュース解説</a>
+      <a class="nav-link" href="#watchlist">ウォッチリスト</a>
+      <a class="nav-link" href="/market-pulse/">← アーカイブ</a>
+    </nav>
+
+    <!-- Market Overview -->
+    <section id="overview">
+      <div class="section-title">Market Overview — 市場概況</div>
+      <div class="card">
+        <div class="card-body">
+          <p class="overview-text"></p>
+        </div>
+      </div>
+
+      <div class="ticker-grid">
+        
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">NVDA</div>
+              <div class="ticker-name" title="NVDA">NVDA</div>
+              <div class="ticker-price">208.27</div>
+              <div class="ticker-change up">
+                +4.32%
+              </div>
+            </div>
+            
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">AAPL</div>
+              <div class="ticker-name" title="AAPL">AAPL</div>
+              <div class="ticker-price">271.06</div>
+              <div class="ticker-change dn">
+                -0.87%
+              </div>
+            </div>
+            
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">GOOGL</div>
+              <div class="ticker-name" title="GOOGL">GOOGL</div>
+              <div class="ticker-price">344.40</div>
+              <div class="ticker-change up">
+                +1.63%
+              </div>
+            </div>
+            
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">MSFT</div>
+              <div class="ticker-name" title="MSFT">MSFT</div>
+              <div class="ticker-price">424.62</div>
+              <div class="ticker-change up">
+                +2.13%
+              </div>
+            </div>
+            
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">TSM</div>
+              <div class="ticker-name" title="TSM">TSM</div>
+              <div class="ticker-price">402.46</div>
+              <div class="ticker-change up">
+                +5.17%
+              </div>
+            </div>
+            
+          
+        
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">^GSPC</div>
+              <div class="ticker-name" title="S&P 500">S&P 500</div>
+              <div class="ticker-price">7,165.08</div>
+              <div class="ticker-change up">
+                +0.80%
+              </div>
+            </div>
+            
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">^NDX</div>
+              <div class="ticker-name" title="NASDAQ 100">NASDAQ 100</div>
+              <div class="ticker-price">27,303.67</div>
+              <div class="ticker-change up">
+                +1.95%
+              </div>
+            </div>
+            
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">^DJI</div>
+              <div class="ticker-name" title="Dow Jones">Dow Jones</div>
+              <div class="ticker-price">49,230.71</div>
+              <div class="ticker-change dn">
+                -0.16%
+              </div>
+            </div>
+            
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">^N225</div>
+              <div class="ticker-name" title="Nikkei 225">Nikkei 225</div>
+              <div class="ticker-price">59,140.23</div>
+              <div class="ticker-change dn">
+                -0.75%
+              </div>
+            </div>
+            
+          
+        
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">JPY=X</div>
+              <div class="ticker-name" title="USD/JPY">USD/JPY</div>
+              <div class="ticker-price">159.33</div>
+              <div class="ticker-change dn">
+                -0.10%
+              </div>
+            </div>
+            
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">EURUSD=X</div>
+              <div class="ticker-name" title="EUR/USD">EUR/USD</div>
+              <div class="ticker-price">1.1726</div>
+              <div class="ticker-change up">
+                +0.17%
+              </div>
+            </div>
+            
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">EURJPY=X</div>
+              <div class="ticker-name" title="EUR/JPY">EUR/JPY</div>
+              <div class="ticker-price">186.81</div>
+              <div class="ticker-change up">
+                +0.07%
+              </div>
+            </div>
+            
+          
+        
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">GC=F</div>
+              <div class="ticker-name" title="Gold">Gold</div>
+              <div class="ticker-price">4,725.40</div>
+              <div class="ticker-change up">
+                +0.43%
+              </div>
+            </div>
+            
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">CL=F</div>
+              <div class="ticker-name" title="WTI Oil">WTI Oil</div>
+              <div class="ticker-price">94.88</div>
+              <div class="ticker-change dn">
+                -1.01%
+              </div>
+            </div>
+            
+          
+        
+      </div>
+    </section>
+
+    <!-- Macro Context -->
+    
+
+    <!-- News Analysis -->
+    <section id="news">
+      <div class="section-title">News Analysis — ニュース詳細解説 (Top 0)</div>
+      
+    </section>
+
+    <!-- Watchlist -->
+    <section id="watchlist">
+      <div class="section-title">Watchlist — 主要銘柄・指数</div>
+      <div class="watchlist-grid">
+        
+      </div>
+    </section>
+
+    <!-- Editor's Note -->
+    <section>
+      <div class="section-title">Editor's Note — 編集後記</div>
+      <div class="editors-note">
+        <div class="note-label">Analyst Comment</div>
+        <p></p>
+      </div>
+    </section>
+
+  </div><!-- /page -->
+
+  <footer>
+    Market Pulse © 2026 &nbsp;|&nbsp; GitHub Actions + Gemini 2.5 Flash &nbsp;|&nbsp;
+    <a href="/market-pulse/">アーカイブ一覧</a>
+  </footer>
+
+  <script>
+    const chartData = [];
+    chartData.forEach(({ id, dates, prices, up }) => {
+      const safeId = id.replace(/\//g, '-').replace(/\^/g, '-');
+      const canvas = document.getElementById('chart-' + safeId);
+      if (!canvas) return;
+      const color = up ? '#15803d' : '#b91c1c';
+      new Chart(canvas, {
+        type: 'line',
+        data: {
+          labels: dates,
+          datasets: [{
+            data: prices,
+            borderColor: color,
+            borderWidth: 1.5,
+            pointRadius: 0,
+            fill: true,
+            backgroundColor: up ? 'rgba(21,128,61,0.08)' : 'rgba(185,28,28,0.08)',
+            tension: 0.3,
+          }]
+        },
+        options: {
+          animation: false,
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { enabled: false } },
+          scales: { x: { display: false }, y: { display: false } },
+        }
+      });
+    });
+  </script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/market-pulse/sw.js');
+    }
+  </script>
+</body>
+</html>
