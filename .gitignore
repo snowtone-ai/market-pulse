@@ -25,3 +25,8 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
+
+# Local agent state
+.claude/settings.local.json
+.claude/worktrees/
+.mcp.json
