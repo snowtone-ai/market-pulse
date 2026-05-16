@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="Market Pulse 2026-05-17 — 朝の市場レポート">
+  <title>Market Pulse 2026-05-17</title>
+  <link rel="manifest" href="/market-pulse/manifest.json">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f0f2f5;
+      --surface: #ffffff;
+      --surface2: #f9fafb;
+      --surface3: #f3f4f6;
+      --border: #e5e7eb;
+      --border2: #d1d5db;
+      --text: #111827;
+      --text-2: #374151;
+      --text-muted: #6b7280;
+      --text-dim: #9ca3af;
+      --blue: #1d4ed8;
+      --blue-mid: #2563eb;
+      --blue-light: #3b82f6;
+      --blue-bg: #eff6ff;
+      --blue-border: #bfdbfe;
+      --green: #15803d;
+      --green-bg: #f0fdf4;
+      --green-border: #bbf7d0;
+      --red: #b91c1c;
+      --red-bg: #fef2f2;
+      --red-border: #fecaca;
+      --amber: #92400e;
+      --amber-bg: #fffbeb;
+      --amber-border: #fde68a;
+      --purple: #6d28d9;
+      --purple-bg: #f5f3ff;
+      --purple-border: #ddd6fe;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      font-size: 15px;
+    }
+    a { color: var(--blue-mid); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Header ── */
+    header {
+      background: var(--surface);
+      border-bottom: 2px solid var(--blue);
+      padding: 0.875rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .header-left { display: flex; align-items: center; gap: 0.875rem; }
+    .logo {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--blue);
+      letter-spacing: -0.02em;
+    }
+    .header-date {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.2rem 0.6rem;
+      font-weight: 500;
+    }
+    .header-right { display: flex; gap: 0.5rem; align-items: center; }
+    .badge {
+      font-size: 0.68rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+    .badge-gemini {
+      background: var(--blue-bg);
+      color: var(--blue);
+      border: 1px solid var(--blue-border);
+    }
+
+    /* ── Layout ── */
+    .page { max-width: 900px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+
+    /* ── Nav ── */
+    .nav-bar {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .nav-link {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 0.3rem 0.75rem;
+      background: var(--surface);
+      transition: all 0.15s;
+      font-weight: 500;
+    }
+    .nav-link:hover {
+      border-color: var(--blue-light);
+      color: var(--blue);
+      text-decoration: none;
+      background: var(--blue-bg);
+    }
+
+    /* ── Section title ── */
+    .section-title {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+    .card-body { padding: 1.25rem 1.375rem; }
+
+    /* ── Market Overview ── */
+    .overview-text {
+      font-size: 0.975rem;
+      color: var(--text-2);
+      line-height: 1.75;
+      border-left: 3px solid var(--blue);
+      padding-left: 1rem;
+    }
+
+    /* ── Ticker Grid ── */
+    .ticker-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .ticker-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 0.75rem;
+      transition: box-shadow 0.15s;
+    }
+    .ticker-card:hover { box-shadow: 0 1px 6px rgba(0,0,0,0.08); }
+    .ticker-symbol {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .ticker-name {
+      font-size: 0.78rem;
+      color: var(--text-2);
+      margin-top: 0.1rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ticker-price {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-top: 0.35rem;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+    .ticker-change {
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-top: 0.1rem;
+      display: inline-block;
+      padding: 0.1rem 0.35rem;
+      border-radius: 3px;
+    }
+    .up { color: var(--green); background: var(--green-bg); }
+    .dn { color: var(--red); background: var(--red-bg); }
+
+    /* ── Macro Context ── */
+    .macro-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    @media (max-width: 600px) { .macro-grid { grid-template-columns: 1fr; } }
+    .macro-block h3 {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 0.5rem;
+    }
+    .macro-block p {
+      font-size: 0.875rem;
+      color: var(--text-2);
+      line-height: 1.7;
+    }
+    .risk-list, .opp-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .risk-list li {
+      font-size: 0.85rem;
+      color: var(--text-2);
+      padding-left: 1.1rem;
+      position: relative;
+      line-height: 1.5;
+    }
+    .risk-list li::before {
+      content: "▲";
+      position: absolute;
+      left: 0;
+      font-size: 0.6rem;
+      color: var(--red);
+      top: 0.25rem;
+    }
+    .opp-list li {
+      font-size: 0.85rem;
+      color: var(--text-2);
+      padding-left: 1.1rem;
+      position: relative;
+      line-height: 1.5;
+    }
+    .opp-list li::before {
+      content: "★";
+      position: absolute;
+      left: 0;
+      font-size: 0.6rem;
+      color: var(--amber);
+      top: 0.25rem;
+    }
+
+    /* ── News Cards ── */
+    .news-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+    .news-card-header {
+      padding: 1.125rem 1.375rem 0.875rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 0.875rem;
+      align-items: flex-start;
+      background: var(--surface2);
+    }
+    .news-rank {
+      flex-shrink: 0;
+      width: 2rem;
+      height: 2rem;
+      background: var(--blue);
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-top: 0.1rem;
+    }
+    .news-headline {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.45;
+    }
+    .news-headline a { color: var(--text); }
+    .news-headline a:hover { color: var(--blue); text-decoration: underline; }
+    .news-meta {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.3rem;
+    }
+
+    /* Analysis body — full width vertical layout */
+    .news-body {
+      padding: 1.25rem 1.375rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .analysis-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .analysis-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .label-what    { color: var(--blue); }
+    .label-why     { color: var(--amber); }
+    .label-reaction { color: var(--purple); }
+    .label-scenarios { color: var(--green); }
+    .label-contrarian { color: var(--red); }
+    .label-watch   { color: var(--text-muted); }
+
+    .analysis-text {
+      font-size: 0.9rem;
+      color: var(--text-2);
+      line-height: 1.75;
+    }
+
+    /* Scenarios */
+    .scenarios {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .scenario {
+      font-size: 0.875rem;
+      line-height: 1.6;
+      padding: 0.55rem 0.875rem;
+      border-radius: 5px;
+      color: var(--text-2);
+    }
+    .scenario-bull {
+      background: var(--green-bg);
+      border-left: 3px solid var(--green);
+    }
+    .scenario-bull::before { content: "▲ 強気 "; color: var(--green); font-weight: 700; font-size: 0.78rem; }
+    .scenario-base {
+      background: var(--amber-bg);
+      border-left: 3px solid #d97706;
+    }
+    .scenario-base::before { content: "● 中立 "; color: #b45309; font-weight: 700; font-size: 0.78rem; }
+    .scenario-bear {
+      background: var(--red-bg);
+      border-left: 3px solid var(--red);
+    }
+    .scenario-bear::before { content: "▼ 弱気 "; color: var(--red); font-weight: 700; font-size: 0.78rem; }
+
+    /* Divider inside analysis */
+    .analysis-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0.25rem 0;
+    }
+
+    /* ── Editor's Note ── */
+    .editors-note {
+      background: var(--purple-bg);
+      border: 1px solid var(--purple-border);
+      border-left: 3px solid var(--purple);
+      border-radius: 8px;
+      padding: 1.125rem 1.375rem;
+      margin-bottom: 1rem;
+    }
+    .editors-note .note-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: 0.5rem;
+    }
+    .editors-note p {
+      font-size: 0.9rem;
+      color: var(--text-2);
+      line-height: 1.75;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 1.25rem;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      margin-top: 2rem;
+    }
+    footer a { color: var(--text-muted); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <span class="logo">Market Pulse</span>
+      <span class="header-date">2026-05-17</span>
+    </div>
+    <div class="header-right">
+      <span class="badge badge-gemini">Gemini 2.5 Flash</span>
+    </div>
+  </header>
+
+  <div class="page">
+    <!-- Nav -->
+    <nav class="nav-bar">
+      <a class="nav-link" href="#overview">市場概況</a>
+      <a class="nav-link" href="#macro">マクロ分析</a>
+      <a class="nav-link" href="#news">ニュース解説</a>
+      <a class="nav-link" href="/market-pulse/">← アーカイブ</a>
+    </nav>
+
+    <!-- Market Overview -->
+    <section id="overview">
+      <div class="section-title">Market Overview — 市場概況</div>
+      <div class="card">
+        <div class="card-body">
+          <p class="overview-text">本日のグローバル市場は、米国主要株価指数が軒並み下落し、特にテクノロジー株が軟調に推移しました。日経平均も大幅安となり、世界的なリスクオフムードが広がっています。為替市場ではドル円が158円台後半へと上昇し、円安が一段と進行。コモディティ市場では、地政学リスクを背景にWTI原油が大幅に上昇する一方、金は下落しました。</p>
+        </div>
+      </div>
+
+      <div class="ticker-grid">
+        
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">NVDA</div>
+              <div class="ticker-name" title="NVDA">NVDA</div>
+              <div class="ticker-price">225.32</div>
+              <div class="ticker-change dn">
+                -4.42%
+              </div>
+            </div>
+            
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">AAPL</div>
+              <div class="ticker-name" title="AAPL">AAPL</div>
+              <div class="ticker-price">300.23</div>
+              <div class="ticker-change up">
+                +0.68%
+              </div>
+            </div>
+            
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">GOOGL</div>
+              <div class="ticker-name" title="GOOGL">GOOGL</div>
+              <div class="ticker-price">396.78</div>
+              <div class="ticker-change dn">
+                -1.07%
+              </div>
+            </div>
+            
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">MSFT</div>
+              <div class="ticker-name" title="MSFT">MSFT</div>
+              <div class="ticker-price">421.92</div>
+              <div class="ticker-change up">
+                +3.05%
+              </div>
+            </div>
+            
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">TSM</div>
+              <div class="ticker-name" title="TSM">TSM</div>
+              <div class="ticker-price">404.35</div>
+              <div class="ticker-change dn">
+                -3.20%
+              </div>
+            </div>
+            
+          
+        
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">^GSPC</div>
+              <div class="ticker-name" title="S&P 500">S&P 500</div>
+              <div class="ticker-price">7,408.50</div>
+              <div class="ticker-change dn">
+                -1.24%
+              </div>
+            </div>
+            
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">^NDX</div>
+              <div class="ticker-name" title="NASDAQ 100">NASDAQ 100</div>
+              <div class="ticker-price">29,125.20</div>
+              <div class="ticker-change dn">
+                -1.54%
+              </div>
+            </div>
+            
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">^DJI</div>
+              <div class="ticker-name" title="Dow Jones">Dow Jones</div>
+              <div class="ticker-price">49,526.17</div>
+              <div class="ticker-change dn">
+                -1.07%
+              </div>
+            </div>
+            
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">^N225</div>
+              <div class="ticker-name" title="Nikkei 225">Nikkei 225</div>
+              <div class="ticker-price">61,409.29</div>
+              <div class="ticker-change dn">
+                -1.99%
+              </div>
+            </div>
+            
+          
+        
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">JPY=X</div>
+              <div class="ticker-name" title="USD/JPY">USD/JPY</div>
+              <div class="ticker-price">158.73</div>
+              <div class="ticker-change up">
+                +0.56%
+              </div>
+            </div>
+            
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">EURUSD=X</div>
+              <div class="ticker-name" title="EUR/USD">EUR/USD</div>
+              <div class="ticker-price">1.1631</div>
+              <div class="ticker-change dn">
+                -0.73%
+              </div>
+            </div>
+            
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">EURJPY=X</div>
+              <div class="ticker-name" title="EUR/JPY">EUR/JPY</div>
+              <div class="ticker-price">184.56</div>
+              <div class="ticker-change dn">
+                -0.20%
+              </div>
+            </div>
+            
+          
+        
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">GC=F</div>
+              <div class="ticker-name" title="Gold">Gold</div>
+              <div class="ticker-price">4,555.80</div>
+              <div class="ticker-change dn">
+                -2.61%
+              </div>
+            </div>
+            
+          
+            
+            <div class="ticker-card">
+              <div class="ticker-symbol">CL=F</div>
+              <div class="ticker-name" title="WTI Oil">WTI Oil</div>
+              <div class="ticker-price">105.42</div>
+              <div class="ticker-change up">
+                +4.20%
+              </div>
+            </div>
+            
+          
+        
+      </div>
+    </section>
+
+    <!-- Macro Context -->
+    
+    <section id="macro">
+      <div class="section-title">Global Macro — 世界経済・マクロ分析</div>
+      <div class="card">
+        <div class="card-body">
+          <div class="macro-grid">
+            <div class="macro-block">
+              <h3>世界経済の現状</h3>
+              <p>世界経済は、AI投資が一部のセクターで成長を牽引する一方で、実質賃金の伸び悩みと消費の減速という乖離が顕在化しています。中央銀行はインフレ圧力の高まりに直面し、FRB内部では利下げのタイミングを巡る議論が激化。中東情勢の緊迫化は原油供給不安を高め、グローバルなインフレリスクと景気減速懸念を併存させています。</p>
+            </div>
+            <div class="macro-block">
+              <h3>日本市場への影響</h3>
+              <p>円安は158円台へと進行し、輸入物価上昇を通じて国内のインフレ圧力を高める可能性があります。米国株安と原油高は、日本株市場に下押し圧力をかけ、特にエネルギーコスト増は企業収益に影響を与えかねません。日銀は、この円安と輸入インフレの動向を注視し、金融政策の舵取りが一段と複雑化するでしょう。</p>
+            </div>
+          </div>
+
+          
+          <div class="macro-grid" style="margin-top: 1rem;">
+            
+            <div class="macro-block">
+              <h3>主なリスク要因</h3>
+              <ul class="risk-list">
+                
+                <li>FRBの金融引き締め長期化、または利上げ再開の可能性が市場の利下げ期待を完全に剥落させ、グローバルな金利上昇と株価調整を招くリスク。</li>
+                
+                <li>中東地政学リスクがエスカレートし、ホルムズ海峡の閉鎖などにより原油供給が大幅に滞り、世界経済が深刻なリセッションに陥るリスク。</li>
+                
+                <li>AI主導の経済成長が一部のセクターに限定され、広範な実体経済の低迷と消費の減退が続き、スタグフレーション的な状況に陥るリスク。</li>
+                
+              </ul>
+            </div>
+            
+            
+            <div class="macro-block">
+              <h3>注目の機会</h3>
+              <ul class="opp-list">
+                
+                <li>AI関連技術の進化と普及は、長期的な生産性向上と新たな産業創出の機会を提供し、関連企業の持続的な成長を後押しする可能性があります。</li>
+                
+                <li>円安は、日本の輸出企業やインバウンド関連企業の競争力を高め、業績改善を通じて日本株市場にポジティブな影響を与える可能性があります。</li>
+                
+                <li>地政学リスクとエネルギー価格の高騰は、再生可能エネルギーやエネルギー効率化技術への投資を加速させ、新たな成長分野を創出する機会となります。</li>
+                
+              </ul>
+            </div>
+            
+          </div>
+          
+        </div>
+      </div>
+    </section>
+    
+
+    <!-- News Analysis -->
+    <section id="news">
+      <div class="section-title">News Analysis — ニュース詳細解説 (Top 5)</div>
+      
+      <article class="news-card">
+        <div class="news-card-header">
+          <div class="news-rank">01</div>
+          <div>
+            <div class="news-headline">
+              
+              <a href="https://www.cnbc.com/2026/05/16/kevin-warsh-comes-into-the-fed-facing-a-big-family-fight-over-cutting-interest-rates.html" target="_blank" rel="noopener noreferrer">Kevin Warsh comes into the Fed facing a big 'family fight' over cutting interest rates</a>
+              
+            </div>
+            <div class="news-meta">CNBC</div>
+          </div>
+        </div>
+        <div class="news-body">
+          <div class="analysis-row">
+            <div class="analysis-label label-what">What Happened — 何が起きたか</div>
+            <p class="analysis-text">FRBの元理事であるケビン・ウォーシュ氏が、現在のFRB内で利下げを巡る激しい議論、いわゆる「家族喧嘩」に直面していると報じられました。インフレの高進と国債利回りの急上昇が背景にあり、FRB内部では利下げに消極的な意見が優勢である可能性が示唆されています。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-why">Why It Matters — なぜ重要か</div>
+            <p class="analysis-text">このニュースは、FRBの金融政策決定プロセスにおける内部の意見対立が激化していることを示しており、市場が期待する利下げのタイミングや規模に不確実性をもたらします。インフレ抑制を優先するタカ派的な姿勢が強まれば、金利の高止まりが長期化し、経済成長に下押し圧力がかかる可能性があります。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-reaction">Market Reaction — 市場への影響</div>
+            <p class="analysis-text">FRBの利下げ期待後退は、米国債利回りの上昇圧力となり、株式市場、特に成長株にとっては逆風となります。ドルは金利差拡大期待から他通貨に対して強含む傾向が見られ、本日のドル円上昇の一因とも考えられます。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-scenarios">3 Scenarios — シナリオ分析</div>
+            <div class="scenarios">
+              <div class="scenario scenario-bull">インフレが予想以上に急速に鈍化し、FRB内部の意見が収斂し、年内に複数回の利下げが実現する。</div>
+              <div class="scenario scenario-base">FRBはデータ次第で慎重な姿勢を維持し、利下げは年後半に限定的かつ緩やかなペースで行われる。</div>
+              <div class="scenario scenario-bear">インフレが再燃し、FRBが利上げ再開の可能性を示唆するか、利下げが大幅に遅延し、経済成長が鈍化する。</div>
+            </div>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-contrarian">Contrarian View — 逆張り視点</div>
+            <p class="analysis-text">市場はFRBのタカ派姿勢を過度に織り込んでいる可能性があり、インフレ指標が予想以上に軟化すれば、FRBはより迅速に利下げに転じる余地があるという見方もあります。経済のソフトランディングを達成するためには、FRBが柔軟な対応を取る必要性も指摘されています。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-watch">What to Watch — 次の注目ポイント</div>
+            <p class="analysis-text">来週発表される消費者物価指数（CPI）や個人消費支出（PCE）デフレーター、そしてFOMC議事要旨やFRB高官の発言に注目が集まります。特に、インフレの持続性を示すデータや、労働市場の動向がFRBの利下げ判断に大きく影響するでしょう。</p>
+          </div>
+        </div>
+      </article>
+      
+      <article class="news-card">
+        <div class="news-card-header">
+          <div class="news-rank">02</div>
+          <div>
+            <div class="news-headline">
+              
+              <a href="https://investinglive.com/news/investinglive-americas-fx-news-wrap-15-may-powell-exits-as-inflation-fears-roar-20260515/" target="_blank" rel="noopener noreferrer">investingLive Americas FX news wrap 15 May: Powell exits as inflation fears roar</a>
+              
+            </div>
+            <div class="news-meta">Forexlive</div>
+          </div>
+        </div>
+        <div class="news-body">
+          <div class="analysis-row">
+            <div class="analysis-label label-what">What Happened — 何が起きたか</div>
+            <p class="analysis-text">米国主要指数が下落し、週間の上昇分を帳消しにする中で、パウエルFRB議長が退任を示唆したとの報道があり、インフレ懸念が市場を席巻していると報じられました。インフレへの懸念が根強く、市場のセンチメントを悪化させています。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-why">Why It Matters — なぜ重要か</div>
+            <p class="analysis-text">パウエル議長の退任示唆（またはその可能性）は、FRBのリーダーシップに不確実性をもたらし、金融政策の継続性に対する懸念を引き起こします。また、インフレ懸念が依然として市場の主要なテーマであることは、FRBが利下げに踏み切る上でのハードルが高いことを示唆しており、金利高止まりの長期化観測を強めます。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-reaction">Market Reaction — 市場への影響</div>
+            <p class="analysis-text">米国主要株価指数は下落し、リスクオフの動きが顕著になりました。インフレ懸念は米国債利回りを押し上げ、ドルは金利差拡大期待から堅調に推移し、ドル円は158円台へと上昇しました。金はインフレヘッジとしての魅力が薄れ、下落しました。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-scenarios">3 Scenarios — シナリオ分析</div>
+            <div class="scenarios">
+              <div class="scenario scenario-bull">パウエル議長の退任報道が誤報であるか、後任が市場に安心感を与える人物であり、インフレが予想以上に急速に収束する。</div>
+              <div class="scenario scenario-base">パウエル議長が任期を全うし、FRBはインフレ抑制を最優先しつつ、データに基づいた慎重な政策運営を続ける。</div>
+              <div class="scenario scenario-bear">パウエル議長が実際に退任し、後任人事の混乱や政策の不確実性が高まり、市場のボラティリティが急上昇する。</div>
+            </div>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-contrarian">Contrarian View — 逆張り視点</div>
+            <p class="analysis-text">パウエル議長の退任が仮に事実であったとしても、FRBの政策決定は合議制であり、個人の影響は限定的であるという見方もあります。また、インフレ懸念は既に市場に十分に織り込まれており、サプライズは限定的である可能性も指摘されます。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-watch">What to Watch — 次の注目ポイント</div>
+            <p class="analysis-text">パウエル議長からの公式なコメントやFRBからの声明、そして次期FRB議長候補に関する報道に注目が集まります。また、引き続きインフレ指標や雇用統計の発表が重要となります。</p>
+          </div>
+        </div>
+      </article>
+      
+      <article class="news-card">
+        <div class="news-card-header">
+          <div class="news-rank">03</div>
+          <div>
+            <div class="news-headline">
+              
+              <a href="https://finnhub.io/api/news?id=e9b9121a80b62a37bf6f609edba82f8cb34df268686bad1d4b6f097e8adfbf80" target="_blank" rel="noopener noreferrer">$800B in AI spending is juicing GDP and stocks — while real wages fall and Americans cut back on goods</a>
+              
+            </div>
+            <div class="news-meta">Yahoo</div>
+          </div>
+        </div>
+        <div class="news-body">
+          <div class="analysis-row">
+            <div class="analysis-label label-what">What Happened — 何が起きたか</div>
+            <p class="analysis-text">AI分野への8000億ドル規模の投資が米国のGDPと株価を押し上げている一方で、実質賃金は下落し、アメリカ人の消費財購入が減少しているという、経済の二極化が報じられました。AI関連企業が経済を牽引する一方で、広範な労働市場や消費にはその恩恵が十分に波及していない状況が浮き彫りになっています。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-why">Why It Matters — なぜ重要か</div>
+            <p class="analysis-text">この乖離は、経済成長が一部のハイテクセクターに集中し、一般市民の生活水準向上には繋がっていない可能性を示唆しています。これは、インフレが賃金上昇を上回り、実質購買力を低下させていることの表れであり、持続可能な経済成長への懸念や、社会的な格差拡大のリスクをはらんでいます。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-reaction">Market Reaction — 市場への影響</div>
+            <p class="analysis-text">AI関連株は引き続き堅調に推移する可能性がありますが、広範な消費関連株や景気敏感株は、実質賃金の低迷と消費減退の懸念から上値が重くなるでしょう。本日のNVDAやGOOGLの下落は、AI関連株への過熱感に対する調整の動きとも解釈できます。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-scenarios">3 Scenarios — シナリオ分析</div>
+            <div class="scenarios">
+              <div class="scenario scenario-bull">AI技術の生産性向上が広範な産業に波及し、実質賃金も上昇に転じ、経済全体の持続的な成長が実現する。</div>
+              <div class="scenario scenario-base">AI主導の成長は続くが、経済の二極化は解消されず、消費は抑制されたまま緩やかな成長が続く。</div>
+              <div class="scenario scenario-bear">AIバブルが崩壊するか、実体経済の悪化がテックセクターにも波及し、景気後退が深刻化する。</div>
+            </div>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-contrarian">Contrarian View — 逆張り視点</div>
+            <p class="analysis-text">AI投資はまだ初期段階であり、その真の経済効果はこれから広範に波及していくという見方もあります。現在の実質賃金の下落は一時的なものであり、AIによる生産性向上が最終的には賃金上昇と消費拡大に繋がるという楽観的なシナリオも存在します。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-watch">What to Watch — 次の注目ポイント</div>
+            <p class="analysis-text">消費者信頼感指数、小売売上高、賃金統計、そしてAI関連企業の決算発表や投資動向に注目が集まります。特に、AI技術がどのように他の産業に統合され、生産性向上に貢献していくかが重要です。</p>
+          </div>
+        </div>
+      </article>
+      
+      <article class="news-card">
+        <div class="news-card-header">
+          <div class="news-rank">04</div>
+          <div>
+            <div class="news-headline">
+              
+              <a href="https://finnhub.io/api/news?id=2f5a4a65d608302f30d9ea2a76bddfef0a09ed3628563a4172f399a402127b4e" target="_blank" rel="noopener noreferrer">Global oil stockpiles could hit record lows if Strait of Hormuz remains closed</a>
+              
+            </div>
+            <div class="news-meta">CNBC</div>
+          </div>
+        </div>
+        <div class="news-body">
+          <div class="analysis-row">
+            <div class="analysis-label label-what">What Happened — 何が起きたか</div>
+            <p class="analysis-text">UBSの分析によると、ホルムズ海峡が閉鎖された場合、世界の原油在庫は5月末までに過去最低水準に達する可能性があると報じられました。これは、中東情勢の緊迫化が原油供給に深刻な影響を及ぼすリスクを示唆しています。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-why">Why It Matters — なぜ重要か</div>
+            <p class="analysis-text">ホルムズ海峡は世界の原油輸送の約20%を占める重要なチョークポイントであり、その閉鎖はグローバルな原油供給に壊滅的な影響を与えます。原油在庫の急減は、原油価格のさらなる高騰を招き、世界経済のインフレ圧力を大幅に高め、景気後退リスクを増大させる構造的な問題です。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-reaction">Market Reaction — 市場への影響</div>
+            <p class="analysis-text">この報道は、WTI原油価格が本日4.2%も上昇した主要因の一つと考えられます。原油価格の高騰は、航空、運輸、製造業などのコスト増に直結し、株式市場全体にネガティブな影響を与えます。また、インフレ懸念から中央銀行の金融引き締め長期化観測を強める要因ともなります。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-scenarios">3 Scenarios — シナリオ分析</div>
+            <div class="scenarios">
+              <div class="scenario scenario-bull">外交努力により中東情勢が沈静化し、ホルムズ海峡の安全が確保され、原油供給不安が後退する。</div>
+              <div class="scenario scenario-base">地政学的緊張は継続するが、大規模な供給途絶には至らず、原油価格は高止まりするものの、急騰は回避される。</div>
+              <div class="scenario scenario-bear">ホルムズ海峡が実際に閉鎖され、原油供給が大幅に滞り、原油価格が歴史的な高騰を見せ、世界経済が深刻なリセッションに陥る。</div>
+            </div>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-contrarian">Contrarian View — 逆張り視点</div>
+            <p class="analysis-text">原油市場は既に地政学リスクを相当程度織り込んでおり、実際に供給が途絶しない限り、現在の価格水準から大幅な上昇は限定的であるという見方もあります。また、主要消費国が戦略備蓄を放出する可能性も考慮に入れるべきです。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-watch">What to Watch — 次の注目ポイント</div>
+            <p class="analysis-text">中東情勢に関するニュース、特にイランと主要国間の外交交渉の進展、そして米国の戦略石油備蓄（SPR）の動向に注目が集まります。また、OPEC+の増産に関する決定も原油市場に大きな影響を与えるでしょう。</p>
+          </div>
+        </div>
+      </article>
+      
+      <article class="news-card">
+        <div class="news-card-header">
+          <div class="news-rank">05</div>
+          <div>
+            <div class="news-headline">
+              
+              <a href="https://news.google.com/rss/articles/CBMixgFBVV95cUxPeWhRa0VGSXhNc1pnb0daVmpKM0wzVDJtdzEtLWxlcDdkcHNQNEpyc3NGcmVXMVJ3dUZjTUJSelFBY0lpZVFHMS1iNXFLR0tWWHZmczFTZl9VM3VkS3E2clk5Q2JKazBITTlqQzRhWXdURGMzQXBhOFFieHAxWHhRRGZjZnNodDVwcDhLZm5TMDdUeUFaZVl4dDV4TElWVUVtajlvcGtCekhkVjhSOGk1elotRVVmcVhsRUZFc3UtZm82NGhnM0E?oc=5" target="_blank" rel="noopener noreferrer">Trump says Xi agrees Iran must open strait, but no sign China will weigh in - Reuters</a>
+              
+            </div>
+            <div class="news-meta">Reuters</div>
+          </div>
+        </div>
+        <div class="news-body">
+          <div class="analysis-row">
+            <div class="analysis-label label-what">What Happened — 何が起きたか</div>
+            <p class="analysis-text">ドナルド・トランプ氏が、中国の習近平国家主席がイランはホルムズ海峡を開放すべきであるという点で同意したと発言しました。しかし、中国がこの問題に積極的に介入する兆候は今のところ見られないと報じられています。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-why">Why It Matters — なぜ重要か</div>
+            <p class="analysis-text">この発言は、ホルムズ海峡を巡る地政学的な緊張が、米国と中国という二大国間の外交議題となっていることを示唆しています。中国の関与は、イランの行動に影響を与える可能性を秘めていますが、その具体的な意図や行動が不透明であるため、依然として不確実性が高い状況です。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-reaction">Market Reaction — 市場への影響</div>
+            <p class="analysis-text">トランプ氏の発言自体が市場に与える直接的な影響は限定的でしたが、ホルムズ海峡の閉鎖リスクがグローバルな主要国の関心事であるという認識を強め、原油価格の上昇圧力の一因となりました。中国の具体的な行動が見られない限り、市場は引き続き中東情勢の推移を警戒するでしょう。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-scenarios">3 Scenarios — シナリオ分析</div>
+            <div class="scenarios">
+              <div class="scenario scenario-bull">中国が外交的圧力を強め、イランがホルムズ海峡の安全を確保する方向に動き、地政学リスクが緩和される。</div>
+              <div class="scenario scenario-base">中国は中東情勢に慎重な姿勢を維持し、ホルムズ海峡を巡る緊張は継続するが、大規模な紛争には発展しない。</div>
+              <div class="scenario scenario-bear">中国の介入が不十分なまま、イランがホルムズ海峡の閉鎖に踏み切り、世界的な原油供給危機が発生する。</div>
+            </div>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-contrarian">Contrarian View — 逆張り視点</div>
+            <p class="analysis-text">トランプ氏の発言は選挙戦略の一環であり、実際の外交的影響力は限定的であるという見方もあります。中国は自身のエネルギー安全保障を重視しており、イランとの関係も考慮しつつ、慎重な対応を取る可能性が高いと指摘されます。</p>
+          </div>
+
+          <hr class="analysis-divider">
+
+          <div class="analysis-row">
+            <div class="analysis-label label-watch">What to Watch — 次の注目ポイント</div>
+            <p class="analysis-text">中国政府からの公式な声明や、イランと主要国間の外交交渉の進展に注目が集まります。特に、中国が中東情勢においてどのような役割を果たすのか、その具体的な行動が今後の市場の動向を左右する重要な要素となるでしょう。</p>
+          </div>
+        </div>
+      </article>
+      
+    </section>
+
+    <!-- Editor's Note -->
+    <section>
+      <div class="section-title">Editor's Note — 編集後記</div>
+      <div class="editors-note">
+        <div class="note-label">Analyst Comment</div>
+        <p>本日の市場は、FRBの利下げ期待後退、AI経済と実体経済の乖離、そして中東地政学リスクによる原油高という、複数の逆風に直面しました。日本人投資家の皆様には、円安の進行が輸出企業に恩恵をもたらす一方で、輸入物価上昇と原油高が国内経済に与える影響を注視し、ポートフォリオのバランスとリスクヘッジの重要性を再認識していただきたいと思います。変動性の高い市場環境において、長期的な視点と分散投資が引き続き鍵となります。</p>
+      </div>
+    </section>
+
+  </div><!-- /page -->
+
+  <footer>
+    Market Pulse © 2026 &nbsp;|&nbsp; GitHub Actions + Gemini 2.5 Flash &nbsp;|&nbsp;
+    <a href="/market-pulse/">アーカイブ一覧</a>
+  </footer>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/market-pulse/sw.js');
+    }
+  </script>
+</body>
+</html>
