@@ -2,7 +2,7 @@
 
 ## Goal Binding
 - Vision source: docs/vision.md
-- Active goal: Maintain Market Pulse under pm-zero v9.4 without changing product code or generated reports.
+- Active goal: Refactor Market Pulse internals without changing product behavior, generated reports, or external interfaces.
 - Planning owner: Codex CLI
 - Implementation owner: Codex CLI
 - Review owner: Codex CLI self-audit
@@ -27,6 +27,7 @@
 | ID | Status | Owner | Depends On | Write Scope | Acceptance | Verification | Evidence |
 |---|---|---|---|---|---|---|---|
 | T001 | verified | Codex CLI | none | AGENTS.md, CLAUDE.md, HANDOFF-JA.md, tasks.md, docs/vision.md, docs/state.md, docs/decisions.md, docs/issues.md, docs/repo-map.md, scripts/setup.mjs, scripts/verify.mjs, .claude/settings.json, .gitignore | pm-zero v9.4 source-of-truth files exist, old project-local hook/MCP scaffolds are removed, and product report generation code is untouched | git diff --check; node scripts/verify.mjs | 2026-05-17: node scripts/verify.mjs passed; git diff --check passed before commit. |
+| T002 | verified | Codex CLI | T001 | scripts/fetch_news.py, tasks.md | News scoring keeps the same weights and matching behavior while keyword groups are named and easier to maintain | node scripts/verify.mjs | 2026-05-17: verify passed; compileall recompiled scripts/fetch_news.py. |
 
 ## Blockers
 | ID | Task | Blocker | Needed decision | Owner |

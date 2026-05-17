@@ -21,6 +21,46 @@ STOCK_SYMBOLS = ["AAPL", "AMZN", "GS", "JPM", "XOM"]
 MAX_NEWS_POOL = 15   # Gemini が 5 件選別するためのプール
 FINNHUB_BASE = "https://finnhub.io/api/v1"
 
+NEWS_KEYWORD_WEIGHTS: tuple[tuple[int, tuple[str, ...]], ...] = (
+    (
+        100,
+        (
+            "fed", "federal reserve", "fomc", "boj", "bank of japan",
+            "ecb", "rate hike", "rate cut", "interest rate", "monetary policy",
+            "inflation target", "yield curve", "quantitative",
+        ),
+    ),
+    (
+        80,
+        (
+            "gdp", "inflation", "cpi", "ppi", "unemployment", "nonfarm",
+            "payroll", "trade balance", "current account", "recession",
+            "economic growth", "consumer price",
+        ),
+    ),
+    (
+        60,
+        (
+            "tariff", "sanction", "trade war", "geopolit", "trump",
+            "china", "japan", "russia", "ukraine", "middle east", "opec",
+        ),
+    ),
+    (
+        40,
+        (
+            "dollar", "yen", "euro", "gold", "oil", "crude", "commodity",
+            "forex", "currency", "brent",
+        ),
+    ),
+    (
+        20,
+        (
+            "stock", "market", "nasdaq", "s&p 500", "dow jones", "nikkei",
+            "earnings", "revenue", "quarterly results",
+        ),
+    ),
+)
+
 
 async def _fetch_company_news(
     client: httpx.AsyncClient,
@@ -61,46 +101,7 @@ def _score_news(item: dict[str, Any]) -> int:
     headline = (item.get("headline") or "").lower()
     summary = (item.get("summary") or "").lower()
     text = headline + " " + summary[:200]
-    score = 0
-
-    # 中央銀行・金融政策（最高優先）
-    if any(w in text for w in [
-        "fed", "federal reserve", "fomc", "boj", "bank of japan",
-        "ecb", "rate hike", "rate cut", "interest rate", "monetary policy",
-        "inflation target", "yield curve", "quantitative",
-    ]):
-        score += 100
-
-    # マクロ経済指標
-    if any(w in text for w in [
-        "gdp", "inflation", "cpi", "ppi", "unemployment", "nonfarm",
-        "payroll", "trade balance", "current account", "recession",
-        "economic growth", "consumer price",
-    ]):
-        score += 80
-
-    # 地政学・政策リスク
-    if any(w in text for w in [
-        "tariff", "sanction", "trade war", "geopolit", "trump",
-        "china", "japan", "russia", "ukraine", "middle east", "opec",
-    ]):
-        score += 60
-
-    # 為替・コモディティ
-    if any(w in text for w in [
-        "dollar", "yen", "euro", "gold", "oil", "crude", "commodity",
-        "forex", "currency", "brent",
-    ]):
-        score += 40
-
-    # 株式市場全般
-    if any(w in text for w in [
-        "stock", "market", "nasdaq", "s&p 500", "dow jones", "nikkei",
-        "earnings", "revenue", "quarterly results",
-    ]):
-        score += 20
-
-    return score
+    return sum(weight for weight, keywords in NEWS_KEYWORD_WEIGHTS if any(w in text for w in keywords))
 
 
 async def fetch_news_async(api_key: str) -> list[dict[str, Any]]:
