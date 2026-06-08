@@ -39,3 +39,4 @@ credentials.json
 .next/
 .claude/transcripts/
 .claude/cache/
+.codegraph/
