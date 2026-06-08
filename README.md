@@ -1,8 +1,14 @@
 # Market Pulse
 
+![Python](https://img.shields.io/badge/Python-3.12-blue?logo=python)
+![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-scheduled-black?logo=github-actions)
+![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-free_hosting-blue?logo=github)
+![Gemini](https://img.shields.io/badge/Gemini-2.5_Flash-orange?logo=google)
+![License](https://img.shields.io/badge/license-MIT-lightgrey)
+
 > 毎朝7時に株式・為替・商品市場のAI分析レポートを自動配信。サーバー費用ゼロで運用できる
 
-GitHub Actions（クラウド上の自動実行基盤）が定刻に起動し、Gemini AIがニュースを6つの視点で深掘り分析したHTMLレポートをGitHub Pages（無料のウェブ公開サービス）で配信します。スマートフォンのホーム画面にアプリとして追加できるPWA（ウェブアプリをスマホアプリのように動かす技術）にも対応しています。
+GitHub Actionsが定刻に起動し、Gemini AIがニュースを6つの視点で深掘り分析したHTMLレポートをGitHub Pagesで配信します。スマートフォンのホーム画面にアプリとして追加できるPWAにも対応しています。
 
 ---
 
@@ -18,11 +24,11 @@ GitHub Actions（クラウド上の自動実行基盤）が定刻に起動し、
 
 ## 技術スタック
 
-| カテゴリ | 技術・ツール |
+| カテゴリ | 技術 |
 |---|---|
-| バックエンド | Python 3.12、yfinance（株価データ取得ライブラリ）、Jinja2（HTMLテンプレートエンジン）、httpx・asyncio（非同期HTTP通信ライブラリ） |
-| インフラ・環境 | GitHub Actions（自動実行基盤・無料）、GitHub Pages（ウェブ公開サービス・無料） |
-| AI・外部API | Gemini 2.5 Flash（Google製AI）、Finnhub API（金融ニュース・経済カレンダー） |
+| バックエンド | Python 3.12, yfinance, Jinja2, httpx, asyncio |
+| インフラ | GitHub Actions (cron), GitHub Pages |
+| AI / データ | Gemini 2.5 Flash, Finnhub API |
 
 ---
 
