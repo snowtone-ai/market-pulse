@@ -30,3 +30,12 @@ Thumbs.db
 .claude/settings.local.json
 .claude/worktrees/
 .mcp.json
+
+# GCP service account keys
+service-account*.json
+credentials.json
+
+# Next.js build output
+.next/
+.claude/transcripts/
+.claude/cache/
