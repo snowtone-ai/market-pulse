@@ -1,8 +1,6 @@
 name: Generate Market Report
 
 on:
-  schedule:
-    - cron: '0 22 * * *'   # UTC 22:00 = JST 翌07:00
   workflow_dispatch:         # 手動実行ボタン
 
 permissions:
@@ -10,6 +8,7 @@ permissions:
 
 jobs:
   generate:
+    if: false  # 配信停止: ワークフローは起動しても実行しない
     runs-on: ubuntu-latest
     timeout-minutes: 15
 

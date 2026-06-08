@@ -6,7 +6,7 @@
 - Current executor: none
 - Write lock: none
 - Coordinator: Codex CLI
-- Latest verification pointer: tasks.md T001
+- Latest verification pointer: tasks.md T003
 - Verification mode: quick
 
 ## Current Blocker
