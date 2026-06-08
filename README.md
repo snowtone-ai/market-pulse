@@ -18,9 +18,11 @@ GitHub Actions（クラウド上の自動実行基盤）が定刻に起動し、
 
 ## 技術スタック
 
-バックエンド：Python 3.12、yfinance（株価データ取得ライブラリ）、Jinja2（HTMLテンプレートエンジン）、httpx・asyncio（非同期HTTP通信ライブラリ）
-インフラ・環境：GitHub Actions（自動実行基盤・無料）、GitHub Pages（ウェブ公開サービス・無料）
-AI・外部API：Gemini 2.5 Flash（Google製AI）、Finnhub API（金融ニュース・経済カレンダー）
+| カテゴリ | 技術・ツール |
+|---|---|
+| バックエンド | Python 3.12、yfinance（株価データ取得ライブラリ）、Jinja2（HTMLテンプレートエンジン）、httpx・asyncio（非同期HTTP通信ライブラリ） |
+| インフラ・環境 | GitHub Actions（自動実行基盤・無料）、GitHub Pages（ウェブ公開サービス・無料） |
+| AI・外部API | Gemini 2.5 Flash（Google製AI）、Finnhub API（金融ニュース・経済カレンダー） |
 
 ---
 
